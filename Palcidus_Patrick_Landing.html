@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Palcidus Patrick | Financial Freedom Architecture</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="stylesheet" href="best_practices_design.css">
+    <style>
+        .hero-section {
+            padding: 8rem 2rem 4rem;
+            text-align: center;
+        }
+
+        .optin-container {
+            max-width: 900px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        @media (max-width: 768px) {
+            .optin-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .article-preview {
+            text-align: left;
+        }
+
+        .article-preview h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .benefit-item {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.2rem;
+            color: var(--text-secondary);
+        }
+
+        .benefit-icon {
+            color: var(--accent-primary);
+            flex-shrink: 0;
+        }
+
+        .form-card {
+            padding: 3rem;
+            text-align: left;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.8rem;
+            color: var(--accent-primary);
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 1rem;
+            color: var(--text-primary);
+            font-family: var(--font-main);
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.2);
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 1.2rem;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            color: #fff;
+            font-size: 1rem;
+            font-weight: 800;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(99, 102, 241, 0.4);
+        }
+
+        .compliance-footer {
+            margin-top: 4rem;
+            padding: 2rem;
+            border-top: 1px solid var(--glass-border);
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            text-align: center;
+        }
+
+        #statusMsg {
+            margin-top: 1rem;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .country-select {
+            display: flex;
+            gap: 1rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="bg-gradient"></div>
+
+    <div class="container">
+        <header>
+            <div class="tag research">Independent Financial Advisory</div>
+            <h1>Palcidus Patrick</h1>
+        </header>
+
+        <main>
+            <section class="optin-container">
+                <div class="article-preview">
+                    <img src="wealth_blueprint_cover.png" alt="The 2026 Wealth Blueprint Cover"
+                        style="width: 100%; border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.5); margin-bottom: 2rem; transform: perspective(1000px) rotateY(-5deg);">
+                    <div class="tag ai">Complimentary Digital Access</div>
+                    <h2>The 2026 Wealth Blueprint</h2>
+                    <p>Strategic cross-border architecture for families and professionals in Canada and the United
+                        States.</p>
+
+                    <div style="margin-top: 2rem;">
+                        <div class="benefit-item">
+                            <span class="benefit-icon">✦</span>
+                            <span><strong>Institutional Access:</strong> Leverage solutions from 100+ global
+                                carriers.</span>
+                        </div>
+                        <div class="benefit-item">
+                            <span class="benefit-icon">✦</span>
+                            <span><strong>Tax Efficiency:</strong> Optimization for RRSP, TFSA, 401k, and IRA
+                                accounts.</span>
+                        </div>
+                        <div class="benefit-item">
+                            <span class="benefit-icon">✦</span>
+                            <span><strong>Legacy Protection:</strong> Advanced probate and estate transfer
+                                strategies.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-card form-card">
+                    <div style="text-align: center; margin-bottom: 2rem;">
+                        <h3 style="margin-bottom: 0.5rem;">Secure Access</h3>
+                        <p style="font-size: 0.85rem;">Enter your details to receive the blueprint.</p>
+                    </div>
+                    <form id="leadForm">
+                        <div class="form-group">
+                            <label>Full Name</label>
+                            <input type="text" id="name" placeholder="Enter your name" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Professional Email</label>
+                            <input type="email" id="email" placeholder="email@address.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Residing Jurisdiction</label>
+                            <select id="country" required>
+                                <option value="">Select Region</option>
+                                <option value="Canada">Canada</option>
+                                <option value="USA">United States</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Primary Financial Goal</label>
+                            <select id="interest" required>
+                                <option value="Life Insurance">Tax-Free Wealth Protection</option>
+                                <option value="Retirement">Income Consistency in Retirement</option>
+                                <option value="Debt Management">Accelerated Debt Elimination</option>
+                                <option value="Education">Educational Legacy / Grants</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="submit-btn" id="submitBtn">Send My Blueprint</button>
+                        <div id="statusMsg"></div>
+                    </form>
+                </div>
+            </section>
+
+            <section id="ai-voice-sector"
+                style="margin-top: 8rem; padding: 4rem 2rem; background: rgba(99, 102, 241, 0.05); border-radius: 30px; border: 1px solid var(--glass-border); text-align: center;">
+                <div class="tag ai">Voice Intelligence Live</div>
+                <h2 style="margin-bottom: 1rem;">Talk to Alex Morgan</h2>
+                <p style="margin-bottom: 3rem; color: var(--text-secondary);">Your AI Financial Concierge is ready to
+                    assist with your portfolio architecture.</p>
+                <button onclick="startVapi()"
+                    style="background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary)); border: none; padding: 20px 40px; border-radius: 12px; color: white; font-size: 1.2rem; font-weight: 800; cursor: pointer; transition: transform 0.3s; box-shadow: 0 10px 30px rgba(99, 102, 241, 0.4);">
+                    🎙️ CLICK TO START VOICE SESSION
+                </button>
+                <div id="vapi-status" style="margin-top: 1rem; font-size: 0.8rem; color: var(--accent-primary);">AI
+                    Engine: Standby</div>
+            </section>
+        </main>
+
+        <footer class="compliance-footer">
+            <p><strong>Disclaimer:</strong> Palcidus Patrick is an independent financial advisor and insurance broker.
+                Financial results depend on individual circumstances. Information provided is for educational purposes
+                only and does not constitute a binding contract. We respect your privacy according to PIPEDA (Canada)
+                and US Privacy Laws.</p>
+            <p style="margin-top: 1rem;">© 2026 | Powered by Independent Financial Architecture</p>
+        </footer>
+    </div>
+
+    <script>
+        document.getElementById('leadForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('submitBtn');
+            const status = document.getElementById('statusMsg');
+
+            const formData = {
+                timestamp: new Date().toISOString(),
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                country: document.getElementById('country').value,
+                interest: document.getElementById('interest').value
+            };
+
+            btn.disabled = true;
+            btn.textContent = 'Securing Data...';
+            status.textContent = 'Connecting to Secure Server...';
+
+            try {
+                // IMPORTANT: Replace this with your Google Apps Script Web App URL
+                // const SCRIPT_URL = 'YOUR_GOOGLE_SCRIPT_WEB_APP_URL';
+
+                // For demonstration, we simulate success
+                setTimeout(() => {
+                    status.style.color = 'var(--accent-primary)';
+                    status.textContent = 'Success! Redirecting to your blueprint...';
+                    btn.textContent = 'Identity Verified';
+
+                    console.log('Lead Captured:', formData);
+
+                    // Redirect to the Thank You page
+                    setTimeout(() => {
+                        window.location.href = 'Palcidus_Patrick_ThankYou.html';
+                    }, 1000);
+                }, 1500);
+
+            } catch (err) {
+                status.style.color = '#ef4444';
+                status.textContent = 'Connection Error. Please try again.';
+                btn.disabled = false;
+                btn.textContent = 'Get My Blueprint';
+            }
+        });
+    </script>
+
+    <!-- Vapi AI Voice Assistant (Alex Morgan) Integration -->
+    <div id="vapi-fallback-button" style="position: fixed; bottom: 30px; right: 30px; z-index: 9999; display: none;">
+        <button onclick="startVapi()"
+            style="background: linear-gradient(135deg, #6366f1, #f472b6); border: none; padding: 15px 25px; border-radius: 50px; color: white; font-weight: 800; cursor: pointer; box-shadow: 0 10px 20px rgba(0,0,0,0.3); font-family: 'Outfit', sans-serif;">
+            🎙️ Talk to Alex Morgan
+        </button>
+    </div>
+
+    <script>
+        var vapiInstance = null;
+
+        function startVapi() {
+            if (typeof vapiSDK !== 'undefined') {
+                vapiSDK.run({
+                    apiKey: "6b25be42-99d9-498b-8e96-74924b03924f",
+                    assistant: "ad824ba4-1667-4b0d-bd99-960c66b67731",
+                    config: {
+                        title: "Alex Morgan",
+                        subtitle: "Advisor Assistant",
+                        color: "#6366f1",
+                        placement: "bottom-right",
+                        showVoiceWave: true,
+                    }
+                });
+                console.log("Vapi Started Manually.");
+            } else {
+                alert("AI Engine is still loading. Please wait 5 seconds and try again.");
+            }
+        }
+
+        (function (d, t) {
+            console.log("Initializing Vapi Engine...");
+            var g = d.createElement(t),
+                s = d.getElementsByTagName(t)[0];
+            g.src = "https://cdn.jsdelivr.net/gh/VapiAI/html-script-tag@latest/dist/assets/index.js";
+            g.defer = true;
+            g.async = true;
+            s.parentNode.insertBefore(g, s);
+
+            g.onload = function () {
+                console.log("Vapi SDK Loaded Successfully.");
+                // Show fallback button if widget doesn't auto-appear in 3 seconds
+                setTimeout(() => {
+                    const widget = document.querySelector('.vapi-btn'); // Standard vapi class
+                    if (!widget) {
+                        document.getElementById('vapi-fallback-button').style.display = 'block';
+                        console.log("Showing Manual Fallback Button.");
+                    }
+                }, 3000);
+
+                try {
+                    vapiSDK.run({
+                        apiKey: "6b25be42-99d9-498b-8e96-74924b03924f",
+                        assistant: "ad824ba4-1667-4b0d-bd99-960c66b67731",
+                        config: {
+                            title: "Alex Morgan",
+                            subtitle: "Advisor Assistant",
+                            color: "#6366f1",
+                            placement: "bottom-right",
+                            showVoiceWave: true,
+                        }
+                    });
+                } catch (e) {
+                    console.error("Auto-run failed, manual trigger ready.", e);
+                }
+            };
+        })(document, "script");
+    </script>
+</body>
+
+</html>
