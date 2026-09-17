@@ -258,10 +258,19 @@ async function importSDK(){
   for(const u of SDK_URLS){try{const m=await import(u);const V=m.default||m.Vapi;if(V)return V;last=new Error('No Vapi constructor')}catch(e){last=e}}
   throw new Error('Vapi Web SDK failed to load'+(last?.message?`: ${last.message}`:''));
 }
+function describeMicrophoneError(e){
+  if(e?.name==='NotFoundError'||e?.name==='DevicesNotFoundError'||/requested device not found|no audio input/i.test(String(e?.message||''))){
+    return 'No microphone was found. Connect or enable a microphone, then try again. You can still use Ask PALCY AI by text.';
+  }
+  if(e?.name==='NotAllowedError'||e?.name==='SecurityError'){
+    return 'Microphone permission was denied. Allow microphone access for this site and try again.';
+  }
+  return e?.message||'Microphone access could not be started. Please try again or use Ask PALCY AI by text.';
+}
 async function microphone(){
   if(!navigator.mediaDevices?.getUserMedia)throw new Error('Microphone access is unavailable. Use HTTPS and a supported browser.');
   try{const s=await navigator.mediaDevices.getUserMedia({audio:true});s.getTracks().forEach(t=>t.stop())}
-  catch(e){if(e?.name==='NotAllowedError'||e?.name==='SecurityError')throw new Error('Microphone permission was denied. Allow microphone access for this site and try again.');throw e}
+  catch(e){throw new Error(describeMicrophoneError(e))}
 }
 async function ensure(){
   if(vapi)return vapi;
