@@ -715,37 +715,58 @@ function renderKeyboard(){
  kb.innerHTML=chars.split(/\s+/).filter(Boolean).map(k=>`<button type="button">${k}</button>`).join('')+'<button type="button" data-space>␠</button><button type="button" data-back>⌫</button>';
  kb.querySelectorAll('button').forEach(b=>b.onclick=()=>{const i=$('chatInput'),s=i.selectionStart??i.value.length,e=i.selectionEnd??s;if(b.hasAttribute('data-back')){if(s!==e)i.value=i.value.slice(0,s)+i.value.slice(e);else if(s>0){i.value=i.value.slice(0,s-1)+i.value.slice(e);i.setSelectionRange(s-1,s-1)}}else{const x=b.hasAttribute('data-space')?' ':b.textContent;i.value=i.value.slice(0,s)+x+i.value.slice(e);i.setSelectionRange(s+x.length,s+x.length)}i.focus()});
 }
-async function submitLead(e){
- e.preventDefault();const name=$('leadName').value.trim(),email=$('leadEmail').value.trim(),phone=$('leadPhone').value.trim(),consent=$('leadConsent').checked;
- if(!name||!email){$('leadStatus').textContent='Please enter your first name and email.';return}
- if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){$('leadStatus').textContent='Please enter a valid email address.';return}
- if(!consent){$('leadStatus').textContent='Please confirm consent to unlock your requested guide.';return}
- state.lead={name,email,phone,consent,source:new URLSearchParams(location.search).get('source')||'website',campaign:'v2.6.11-client',priority:state.priority,language:currentLanguage().name};
- $('leadStatus').textContent='Unlocking your guide and synchronizing your discovery…';
+async function submitLead(e) {
+    e.preventDefault();
+    const name = $('leadName').value.trim(),
+          email = $('leadEmail').value.trim(),
+          phone = $('leadPhone').value.trim(),
+          consent = $('leadConsent').checked;
+    if (!name || !email) { $('leadStatus').textContent = 'Please enter your first name and email.'; return }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { $('leadStatus').textContent = 'Please enter a valid email address.'; return }
+    if (!consent) { $('leadStatus').textContent = 'Please confirm consent to unlock your requested guide.'; return }
 
- // IMPORTANT: CRM intake, advisor SMS/follow-up and email delivery are independent.
- // A failure in one channel must never prevent the other channels from running.
- const intakeJob=api('/api/leads/intake',{method:'POST',body:JSON.stringify(state.lead)});
- const followupJob=api('/api/automation/lead-followup',{method:'POST',body:JSON.stringify(state.lead)});
- const giftJob=sendThankYou();
+    const priority = state.priority || 'general';
+    const language = (currentLanguage().code || 'en').slice(0,2);
+    const idempotencyKey = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : ('palcy-' + Date.now() + '-' + Math.random().toString(36).slice(2));
+    state.lead = {
+        firstName: name, email, phone, consent: true,
+        selectedPriority: priority, language,
+        source: new URLSearchParams(location.search).get('source') || 'website',
+        campaign: 'v2.6.11-client',
+        consentTextVersion: 'advisor-intake-consent-v1',
+        idempotencyKey
+    };
 
- $('thankName').textContent=name;$('giftExternal').href=CFG.giftUrl;$('giftBook').href=CFG.bookingUrl;
- showStep('gift');
-
- const settled=await Promise.allSettled([intakeJob,followupJob,giftJob]);
- const diag={
-   build:'v2.6.11',
-   at:new Date().toISOString(),
-   lead_email:email,
-   intake:settled[0].status==='fulfilled'?{ok:true,response:settled[0].value}:{ok:false,error:String(settled[0].reason?.message||settled[0].reason)},
-   followup:settled[1].status==='fulfilled'?{ok:true,response:settled[1].value}:{ok:false,error:String(settled[1].reason?.message||settled[1].reason)},
-   gift_email:settled[2].status==='fulfilled'?{ok:true}:{ok:false,error:String(settled[2].reason?.message||settled[2].reason)}
- };
- try{localStorage.setItem('PALCIDUSAI_LAST_ORCHESTRATION',JSON.stringify(diag))}catch{}
- console.info('PALCIDUSAI_ORCHESTRATION',diag);
- if(!diag.intake.ok)$('leadStatus').textContent='Your guide is unlocked. CRM synchronization needs attention; the other delivery channels were still attempted.';
-}
-async function sendThankYou(){
+    $('leadStatus').textContent = 'Securely submitting your discovery…';
+    try {
+        const response = await fetch('https://yzeomkrvncewnrbvhuui.supabase.co/functions/v1/advisor-intake', {
+            method: 'POST',
+            headers: {'Content-Type':'application/json','Idempotency-Key':idempotencyKey},
+            body: JSON.stringify(state.lead),
+            credentials: 'omit'
+        });
+        let result = {};
+        try { result = await response.json(); } catch (_) {}
+        if (!response.ok) {
+            $('leadStatus').textContent = result.error === 'rate_limited'
+              ? 'Too many attempts. Please wait and try again.'
+              : 'We could not securely save your request. Please try again.';
+            return;
+        }
+        if (!result.reference) {
+            $('leadStatus').textContent = 'Your request could not be confirmed. Please try again.';
+            return;
+        }
+        $('leadStatus').textContent = 'Your request was securely received.';
+        $('thankName').textContent = name;
+        $('giftExternal').href = CFG.giftUrl;
+        $('giftBook').href = CFG.bookingUrl;
+        showStep('gift');
+        try { await sendThankYou(); } catch (_) {}
+    } catch (err) {
+        $('leadStatus').textContent = 'Secure connection unavailable. Please try again.';
+    }
+}async function sendThankYou(){
  const email=state.lead.email;if(!email)return;
  const plain=`Thank you, ${state.lead.name}. Your complimentary Core Financial Concepts guide is ready: ${CFG.giftUrl}\n\nContinue your PALCIDUSAI Financial Discovery and book a private review: ${CFG.bookingUrl}`;
  try{
