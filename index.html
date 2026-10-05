@@ -767,15 +767,8 @@ async function submitLead(e) {
         $('leadStatus').textContent = 'Secure connection unavailable. Please try again.';
     }
 }async function sendThankYou(){
- const email=state.lead.email;if(!email)return;
- const plain=`Thank you, ${state.lead.name}. Your complimentary Core Financial Concepts guide is ready: ${CFG.giftUrl}\n\nContinue your PALCIDUSAI Financial Discovery and book a private review: ${CFG.bookingUrl}`;
- try{
-   await emailJsSend(email,state.lead.name,'Your Free Financial Concepts Guide + PALCIDUSAI Discovery',plain,giftEmailHTML(),state.lead.phone||'','client_gift');
-   $('thankEmailStatus').textContent='Your thank-you email and guide link were sent.';
-   try{await sendAdvisorBrief('New Prospect Captured')}catch(e){console.warn('Advisor intelligence brief failed',e)}
- }catch(e){$('thankEmailStatus').textContent='Your guide is unlocked here. Automatic email delivery could not be confirmed: '+(e?.message||String(e))}
-}
-function init(){
+  $('thankEmailStatus').textContent='Your guide is available here. Automatic outbound email is disabled until provider verification is completed.';
+}function init(){
  renderPriorities();renderTopics();
  $('giftExternal').href=CFG.giftUrl;$('giftBook').href=CFG.bookingUrl;
  $('heroStart').onclick=()=>{showStep('priority')};$('heroAsk').onclick=openChat;$('topChat').onclick=openChat;
