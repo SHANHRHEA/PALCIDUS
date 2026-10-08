@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PALCYAI Owner Video Upload</title>
+<style>
+body{margin:0;background:#031326;color:#edf6ff;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;min-height:100vh;display:grid;place-items:center;padding:24px}
+.card{width:min(760px,100%);background:linear-gradient(145deg,#0a2340,#061a30);border:1px solid rgba(255,255,255,.12);border-radius:28px;padding:30px;box-shadow:0 30px 90px rgba(0,0,0,.45)}
+h1{margin:0 0 8px;font-size:clamp(2rem,5vw,3.5rem)}p{color:#9eb7d0;line-height:1.6}
+input[type=email],input[type=file]{width:100%;box-sizing:border-box;margin-top:8px;padding:14px;border-radius:14px;border:1px solid rgba(255,255,255,.12);background:#0b223e;color:#fff}
+button{margin-top:14px;padding:14px 18px;border:0;border-radius:14px;background:linear-gradient(135deg,#167ee5,#279df4);color:#fff;font-weight:900;cursor:pointer}
+button.secondary{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12)}
+.status{margin-top:14px;padding:12px 14px;border-radius:14px;background:rgba(255,255,255,.04);color:#bcd1e4;min-height:22px}
+.ok{color:#8ff0c6}.bad{color:#ff9baa}
+small{color:#7f9bb5}
+a{color:#79caff}
+</style>
+</head>
+<body>
+<main class="card">
+<span>PALCYAI • OWNER MEDIA</span>
+<h1>Upload the PALCYAI launch video</h1>
+<p>Use this page once to place your owner-supplied <strong>palcyai-launch-v3.mp4</strong> into the PALCYAI media bucket. After upload, the public UI and Advisor OS use the same stable URL.</p>
+<div id="authBox">
+<label>Owner email</label>
+<input id="email" type="email" value="patrickpalcidus@gmail.com" autocomplete="email">
+<button id="sendLink">Send owner sign-in link</button>
+</div>
+<div id="uploadBox" hidden>
+<p class="ok">Signed in. Choose the video file from your computer.</p>
+<input id="file" type="file" accept="video/mp4">
+<button id="upload">Upload / Replace Launch Video</button>
+<button id="signout" class="secondary">Sign out</button>
+<p><small>Maximum file size: 25 MB. MP4 only. No client data should be uploaded here.</small></p>
+</div>
+<div id="status" class="status">Checking owner session…</div>
+<p><a href="index.html">← Back to PALCYAI</a></p>
+</main>
+<script type="module">
+import {createClient} from 'https://esm.sh/@supabase/supabase-js@2';
+const URL='https://yzeomkrvncewnrbvhuui.supabase.co';
+const KEY='sb_publishable_ZnvYLFgr4w0TNrgplM6dLQ_sO9ThtD0';
+const sb=createClient(URL,KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+const emailEl=document.getElementById('email'), statusEl=document.getElementById('status');
+function status(t,ok=false){statusEl.textContent=t;statusEl.className='status '+(ok?'ok':'')}
+async function refresh(){const {data:{session}}=await sb.auth.getSession();document.getElementById('authBox').hidden=!!session;document.getElementById('uploadBox').hidden=!session;status(session?'Signed in.':'Not signed in.')}
+document.getElementById('sendLink').onclick=async()=>{const email=emailEl.value.trim();if(!email){status('Enter the owner email.');return}const {error}=await sb.auth.signInWithOtp({email,options:{emailRedirectTo:location.href}});status(error?'Sign-in error: '+error.message:'Magic link sent. Open it, then return to this page.',!error)};
+document.getElementById('signout').onclick=async()=>{await sb.auth.signOut();await refresh()};
+document.getElementById('upload').onclick=async()=>{
+ const {data:{session}}=await sb.auth.getSession(); if(!session){status('Please sign in first.');return}
+ const file=document.getElementById('file').files?.[0]; if(!file){status('Choose an MP4 first.');return}
+ if(file.type!=='video/mp4'){status('Only MP4 is allowed.');return}
+ if(file.size>25*1024*1024){status('That file is larger than 25 MB.');return}
+ status('Uploading…');
+ const {error}=await sb.storage.from('palcyai-media').upload('palcyai-launch-v3.mp4',file,{upsert:true,contentType:'video/mp4',cacheControl:'3600'});
+ if(error){status('Upload failed: '+error.message);return}
+ const publicUrl=URL+'/storage/v1/object/public/palcyai-media/palcyai-launch-v3.mp4';
+ status('UPLOAD COMPLETE. Your PALCYAI video URL is: '+publicUrl,true);
+};
+sb.auth.onAuthStateChange(()=>refresh());
+refresh();
+</script>
+</body>
+</html>
