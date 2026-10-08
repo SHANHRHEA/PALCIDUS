@@ -58,17 +58,7 @@ img[alt="Palcidus Patrick"]{
   background:#ffffff !important;
 }
 
-/* PALCYAI owned launch-video experience */
-.palcyai-video-wrap{margin:0 0 34px;padding:26px;border-radius:30px;background:linear-gradient(145deg,rgba(10,35,64,.97),rgba(5,26,50,.98));border:1px solid rgba(109,201,255,.16);box-shadow:var(--shadow)}
-.palcyai-video-head{display:flex;justify-content:space-between;gap:18px;align-items:flex-end;margin-bottom:18px}
-.palcyai-video-head h2{margin:10px 0 0;font-size:clamp(1.9rem,3.5vw,3.2rem)}
-.palcyai-video-head p{margin:8px 0 0;color:var(--muted);line-height:1.55;max-width:760px}
-.palcyai-video-badge{padding:9px 12px;border-radius:999px;background:rgba(59,214,155,.08);border:1px solid rgba(59,214,155,.2);color:#8fe9c3;font-size:.76rem;font-weight:900;white-space:nowrap}
-.palcyai-video{width:100%;display:block;aspect-ratio:16/9;background:#000;border-radius:22px;border:1px solid rgba(255,255,255,.08)}
-.palcyai-video-actions{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;margin-top:14px}
-.palcyai-video-status{color:#9db4ca;font-size:.82rem}
-.palcyai-video-link{font-size:.82rem;color:#dff3ff;text-decoration:none;padding:9px 12px;border-radius:12px;border:1px solid var(--line);background:rgba(255,255,255,.04)}
-@media(max-width:700px){.palcyai-video-wrap{padding:18px}.palcyai-video-head{align-items:flex-start;flex-direction:column}.palcyai-video-badge{white-space:normal}}
+
 </style>
 <script>
 window.PALCIDUS_I18N_CONFIG={gateway:"https://round-math-d344.aalphagroupindia.workers.dev"};
@@ -903,25 +893,6 @@ document.addEventListener('DOMContentLoaded',init);
   </div>
 </section>
 
-<section id="palcyai-launch-video" class="palcyai-video-wrap" aria-label="PALCYAI launch video">
-  <div class="palcyai-video-head">
-    <div>
-      <span class="section-label">PALCYAI • 60-SECOND LAUNCH</span>
-      <h2>See PALCYAI in action.</h2>
-      <p>This is the PALCYAI launch video, hosted in your PALCYAI Supabase media storage. The same owned asset can be used by the public UI and Advisor OS.</p>
-    </div>
-    <span class="palcyai-video-badge">OWNER MEDIA • PALCYAI</span>
-  </div>
-  <video class="palcyai-video" id="palcyaiLaunchVideo" controls playsinline preload="metadata">
-    <source src="https://yzeomkrvncewnrbvhuui.supabase.co/storage/v1/object/public/palcyai-media/palcyai-launch-v3.mp4" type="video/mp4">
-    Your browser does not support HTML5 video. <a href="https://yzeomkrvncewnrbvhuui.supabase.co/storage/v1/object/public/palcyai-media/palcyai-launch-v3.mp4" target="_blank" rel="noopener">Open the video.</a>
-  </video>
-  <div class="palcyai-video-actions">
-    <span id="palcyaiVideoStatus" class="palcyai-video-status">Video source configured. Waiting for the owner media file to be uploaded.</span>
-    <a class="palcyai-video-link" href="https://yzeomkrvncewnrbvhuui.supabase.co/storage/v1/object/public/palcyai-media/palcyai-launch-v3.mp4" target="_blank" rel="noopener">Open PALCYAI video ↗</a>
-  </div>
-</section>
-
 <section class="journey-shell" id="journey">
   <nav class="progress" aria-label="Discovery progress">
     <span class="active" data-step-dot="priority"><b>1</b> Priorities</span>
@@ -1042,95 +1013,7 @@ document.addEventListener('DOMContentLoaded',init);
   <span><a href="/privacy.html" target="_blank" rel="noopener">Privacy</a> · <a href="/terms.html" target="_blank" rel="noopener">Terms</a> · <a href="/cookie-policy.html" target="_blank" rel="noopener">Cookies &amp; Storage</a> · <a href="/data-rights.html" target="_blank" rel="noopener">Data Rights</a> · <a href="/security.html" target="_blank" rel="noopener">Security</a></span>
 </footer>
 
-<div id="chiefOverlay" style="display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.72);backdrop-filter:blur(12px);padding:24px">
-  <div style="width:min(1100px,96vw);height:min(820px,92vh);margin:0 auto;background:#071a30;border:1px solid rgba(83,178,255,.25);border-radius:28px;box-shadow:0 40px 120px rgba(0,0,0,.65);overflow:hidden;display:grid;grid-template-rows:auto 1fr">
-    <div style="display:flex;justify-content:space-between;align-items:center;padding:18px 20px;border-bottom:1px solid rgba(255,255,255,.1)">
-      <div><b style="font-size:1.1rem">PALCYAI CHIEF BRAIN</b><div style="color:#78e1b6;font-size:.78rem;margin-top:3px">OWNER ACTION CONSOLE</div></div>
-      <button id="chiefClose" class="ghost" type="button">Close ×</button>
-    </div>
-    <div id="chiefLogin" style="padding:28px;display:grid;align-content:center;max-width:620px;margin:auto;width:100%">
-      <h2 style="font-size:2rem;margin:0 0 8px">Tell PALCYAI what to do.</h2>
-      <p style="color:#a9bfd4">Sign in with the owner magic link. PALCYAI will route the request, run the available action, and return evidence.</p>
-      <input id="chiefEmail" class="field" style="width:100%;margin:10px 0" type="email" value="patrickpalcidus@gmail.com" autocomplete="email">
-      <button id="chiefLoginBtn" class="primary" type="button">Send owner magic link</button>
-      <div id="chiefLoginMsg" class="form-status" style="margin-top:12px"></div>
-    </div>
-    <div id="chiefApp" style="display:none;grid-template-rows:auto 1fr auto;min-height:0">
-      <div style="padding:18px;display:flex;gap:8px;flex-wrap:wrap;border-bottom:1px solid rgba(255,255,255,.08)">
-        <button class="ghost chiefQuick" data-command="status" type="button">System Status</button>
-        <button class="ghost chiefQuick" data-command="send test email" type="button">Owner Test Email</button>
-        <button class="ghost chiefQuick" data-command="show pending approvals" type="button">Approvals</button>
-        <button class="ghost chiefQuick" data-command="build a growth campaign" type="button">Campaign</button>
-        <button class="ghost chiefQuick" data-command="plan this software change" type="button">Product Engineering</button>
-      </div>
-      <div id="chiefFeed" style="padding:20px;overflow:auto;display:grid;gap:12px;align-content:start">
-        <div style="padding:14px 16px;border-radius:17px;background:#0b2a48;border:1px solid rgba(255,255,255,.08)">Ready. Your command becomes a real PALCYAI action.</div>
-      </div>
-      <form id="chiefForm" style="display:grid;grid-template-columns:1fr auto;gap:10px;padding:14px;border-top:1px solid rgba(255,255,255,.1)">
-        <textarea id="chiefCommand" rows="3" class="field" style="margin:0;resize:none" placeholder="Example: Check the whole system and tell me what needs action."></textarea>
-        <button id="chiefSend" class="primary" type="submit">Send ↗</button>
-      </form>
-    </div>
-  </div>
-</div>
-<script type="module">
-import { createClient as createSupabaseClient } from 'https://esm.sh/@supabase/supabase-js@2';
-const CHIEF_SUPABASE_URL='https://yzeomkrvncewnrbvhuui.supabase.co';
-const CHIEF_SUPABASE_KEY='sb_publishable_ZnvYLFgr4w0TNrgplM6dLQ_sO9ThtD0';
-const CHIEF_URL=CHIEF_SUPABASE_URL+'/functions/v1/palcy-owner-command';
-const chiefSB=createSupabaseClient(CHIEF_SUPABASE_URL,CHIEF_SUPABASE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
-const chief=$=>document.getElementById($);
-const escChief=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
-function chiefOpen(){chief('chiefOverlay').style.display='block';}
-function chiefClose(){chief('chiefOverlay').style.display='none';}
-function chiefMsg(role,text){
-  const d=document.createElement('div');
-  d.style.cssText='max-width:88%;padding:13px 15px;border-radius:17px;border:1px solid rgba(255,255,255,.08);'+(role==='user'?'justify-self:end;background:#17334f':'background:#0b2a48');
-  d.innerHTML='<div style="font-size:11px;color:#91a9bf;margin-bottom:5px">'+escChief(role==='user'?'YOU':'PALCY CHIEF BRAIN')+'</div>'+escChief(text).replace(/\n/g,'<br>');
-  chief('chiefFeed').appendChild(d);chief('chiefFeed').scrollTop=chief('chiefFeed').scrollHeight;return d;
-}
-async function refreshChiefSession(){
-  const {data:{session}}=await chiefSB.auth.getSession();
-  if(session){
-    chief('chiefLogin').style.display='none';chief('chiefApp').style.display='grid';
-  } else {
-    chief('chiefLogin').style.display='grid';chief('chiefApp').style.display='none';
-  }
-}
-async function chiefCommand(command){
-  const {data:{session}}=await chiefSB.auth.getSession();
-  if(!session){chiefMsg('ai','Please sign in first.');return}
-  chiefMsg('user',command);
-  const working=chiefMsg('ai','Working…');
-  chief('chiefSend').disabled=true;
-  try{
-    const r=await fetch(CHIEF_URL,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+session.access_token},body:JSON.stringify({text:command})});
-    const j=await r.json().catch(()=>({}));working.remove();
-    if(!r.ok){chiefMsg('ai','Action failed: '+(j.error||('HTTP '+r.status)));return}
-    if(j.action==='system_status'){
-      chiefMsg('ai','SYSTEM STATUS\\nTest runs: '+(j.data?.test_run_count??0)+'\\nRecent actions: '+(j.data?.recent_actions?.length??0)+'\\nRecent approvals: '+(j.data?.recent_approvals?.length??0)+'\\nRoutes: '+(j.routes||[]).join(' | '));
-    }else if(j.action==='email_test'){
-      chiefMsg('ai',(j.ok?'EMAIL TEST COMPLETED':'EMAIL TEST FAILED')+'\\nProvider: '+(j.provider||'Resend')+'\\nAction ID: '+(j.action_id||'—')+'\\nProvider message ID: '+(j.detail?.response?.id||'—'));
-    }else{
-      chiefMsg('ai','ACTION QUEUED\\nAction ID: '+(j.action_id||'—')+'\\nStatus: '+(j.status||'queued')+'\\nRoutes: '+(j.routes||[]).join(' | '));
-    }
-  }catch(e){working.remove();chiefMsg('ai','Connection error: '+e.message)}
-  finally{chief('chiefSend').disabled=false}
-}
-chief('chiefLaunch')?.addEventListener('click',chiefOpen);
-chief('chiefClose')?.addEventListener('click',chiefClose);
-chief('chiefOverlay')?.addEventListener('click',e=>{if(e.target===chief('chiefOverlay'))chiefClose()});
-chief('chiefLoginBtn')?.addEventListener('click',async()=>{
-  const email=chief('chiefEmail').value.trim();
-  if(email!=='patrickpalcidus@gmail.com'){chief('chiefLoginMsg').textContent='Owner account only.';return}
-  const {error}=await chiefSB.auth.signInWithOtp({email,options:{emailRedirectTo:location.href.split('#')[0]+'#chief'}});
-  chief('chiefLoginMsg').textContent=error?'Login error: '+error.message:'Magic link sent. Open it in your email, then return to the Chief Console.';
-});
-chief('chiefForm')?.addEventListener('submit',e=>{e.preventDefault();const c=chief('chiefCommand').value.trim();if(c){chief('chiefCommand').value='';chiefCommand(c)}});
-document.querySelectorAll('.chiefQuick').forEach(b=>b.addEventListener('click',()=>chiefCommand(b.dataset.command)));
-chiefSB.auth.onAuthStateChange(()=>refreshChiefSession());
-refreshChiefSession();
-</script><script>
+<script>
 (function(){
   const v=document.getElementById('palcyaiLaunchVideo');
   const s=document.getElementById('palcyaiVideoStatus');
