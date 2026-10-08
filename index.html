@@ -836,7 +836,7 @@ document.addEventListener('DOMContentLoaded',init);
 <body>
 <header class="topbar">
   <a class="brand" href="#" onclick="event.preventDefault();window.scrollTo({top:0,behavior:'smooth'})" aria-label="PALCIDUSAI Financial Discovery"><span class="logo">PA</span><span><b>PALCIDUSAI</b><small>Private Financial Discovery</small></span></a>
-  <div class="top-actions"><button class="ghost" id="chiefLaunch" type="button" title="Open PALCYAI Chief Brain command center">⌘ Chief</button>
+  <div class="top-actions">
     <span class="language-hint" id="mainLanguageHint">🌐 Preferred language</span><select id="clientLanguage" class="language-select" aria-label="Preferred language"></select><span id="translationStatus" data-i18n-force="status" class="translation-status" hidden></span>
     <button class="icon-btn" id="topChat" type="button" title="Ask PALCY AI">AI</button>
     <button class="icon-btn" id="topVoice" type="button" title="Talk to PALCY AI">🎙</button>
@@ -1013,14 +1013,6 @@ document.addEventListener('DOMContentLoaded',init);
   <span><a href="/privacy.html" target="_blank" rel="noopener">Privacy</a> · <a href="/terms.html" target="_blank" rel="noopener">Terms</a> · <a href="/cookie-policy.html" target="_blank" rel="noopener">Cookies &amp; Storage</a> · <a href="/data-rights.html" target="_blank" rel="noopener">Data Rights</a> · <a href="/security.html" target="_blank" rel="noopener">Security</a></span>
 </footer>
 
-<script>
-(function(){
-  const v=document.getElementById('palcyaiLaunchVideo');
-  const s=document.getElementById('palcyaiVideoStatus');
-  if(!v||!s)return;
-  v.addEventListener('loadedmetadata',function(){s.textContent='Video ready • '+Math.round(v.duration)+' seconds • '+v.videoWidth+'×'+v.videoHeight;});
-  v.addEventListener('error',function(){s.textContent='Video UI is installed, but the owned media file is not yet reachable from PALCYAI storage.';});
-})();
-</script>
+
 </body>
 </html>
