@@ -768,7 +768,9 @@ async function submitLead(e) {
             $('leadStatus').textContent = 'Your request could not be confirmed. Please try again.';
             return;
         }
-        $('leadStatus').textContent = 'Your request was securely received.';
+        $('leadStatus').textContent = result.external_actions_performed
+          ? 'Your request was securely received and your requested email actions were dispatched.'
+          : 'Your request was securely received. Email delivery is being finalized securely.';
         $('thankName').textContent = name;
         $('giftExternal').href = CFG.giftUrl;
         $('giftBook').href = CFG.bookingUrl;
