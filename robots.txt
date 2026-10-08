@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /palcyai-action-center.html
+Disallow: /palcyai-control-center.html
+Disallow: /palcyai-video-upload.html
+Disallow: /owner/
+Disallow: /private/
+Sitemap: https://advisor-financial-insurance.pages.dev/sitemap.xml
