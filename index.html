@@ -57,6 +57,18 @@ img[alt="Palcidus Patrick"]{
   object-position:center 18% !important;
   background:#ffffff !important;
 }
+
+/* PALCYAI owned launch-video experience */
+.palcyai-video-wrap{margin:0 0 34px;padding:26px;border-radius:30px;background:linear-gradient(145deg,rgba(10,35,64,.97),rgba(5,26,50,.98));border:1px solid rgba(109,201,255,.16);box-shadow:var(--shadow)}
+.palcyai-video-head{display:flex;justify-content:space-between;gap:18px;align-items:flex-end;margin-bottom:18px}
+.palcyai-video-head h2{margin:10px 0 0;font-size:clamp(1.9rem,3.5vw,3.2rem)}
+.palcyai-video-head p{margin:8px 0 0;color:var(--muted);line-height:1.55;max-width:760px}
+.palcyai-video-badge{padding:9px 12px;border-radius:999px;background:rgba(59,214,155,.08);border:1px solid rgba(59,214,155,.2);color:#8fe9c3;font-size:.76rem;font-weight:900;white-space:nowrap}
+.palcyai-video{width:100%;display:block;aspect-ratio:16/9;background:#000;border-radius:22px;border:1px solid rgba(255,255,255,.08)}
+.palcyai-video-actions{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;margin-top:14px}
+.palcyai-video-status{color:#9db4ca;font-size:.82rem}
+.palcyai-video-link{font-size:.82rem;color:#dff3ff;text-decoration:none;padding:9px 12px;border-radius:12px;border:1px solid var(--line);background:rgba(255,255,255,.04)}
+@media(max-width:700px){.palcyai-video-wrap{padding:18px}.palcyai-video-head{align-items:flex-start;flex-direction:column}.palcyai-video-badge{white-space:normal}}
 </style>
 <script>
 window.PALCIDUS_I18N_CONFIG={gateway:"https://round-math-d344.aalphagroupindia.workers.dev"};
@@ -891,6 +903,25 @@ document.addEventListener('DOMContentLoaded',init);
   </div>
 </section>
 
+<section id="palcyai-launch-video" class="palcyai-video-wrap" aria-label="PALCYAI launch video">
+  <div class="palcyai-video-head">
+    <div>
+      <span class="section-label">PALCYAI • 60-SECOND LAUNCH</span>
+      <h2>See PALCYAI in action.</h2>
+      <p>This is the PALCYAI launch video, hosted in your PALCYAI Supabase media storage. The same owned asset can be used by the public UI and Advisor OS.</p>
+    </div>
+    <span class="palcyai-video-badge">OWNER MEDIA • PALCYAI</span>
+  </div>
+  <video class="palcyai-video" id="palcyaiLaunchVideo" controls playsinline preload="metadata">
+    <source src="https://yzeomkrvncewnrbvhuui.supabase.co/storage/v1/object/public/palcyai-media/palcyai-launch-v3.mp4" type="video/mp4">
+    Your browser does not support HTML5 video. <a href="https://yzeomkrvncewnrbvhuui.supabase.co/storage/v1/object/public/palcyai-media/palcyai-launch-v3.mp4" target="_blank" rel="noopener">Open the video.</a>
+  </video>
+  <div class="palcyai-video-actions">
+    <span id="palcyaiVideoStatus" class="palcyai-video-status">Video source configured. Waiting for the owner media file to be uploaded.</span>
+    <a class="palcyai-video-link" href="https://yzeomkrvncewnrbvhuui.supabase.co/storage/v1/object/public/palcyai-media/palcyai-launch-v3.mp4" target="_blank" rel="noopener">Open PALCYAI video ↗</a>
+  </div>
+</section>
+
 <section class="journey-shell" id="journey">
   <nav class="progress" aria-label="Discovery progress">
     <span class="active" data-step-dot="priority"><b>1</b> Priorities</span>
@@ -1098,5 +1129,14 @@ chief('chiefForm')?.addEventListener('submit',e=>{e.preventDefault();const c=chi
 document.querySelectorAll('.chiefQuick').forEach(b=>b.addEventListener('click',()=>chiefCommand(b.dataset.command)));
 chiefSB.auth.onAuthStateChange(()=>refreshChiefSession());
 refreshChiefSession();
-</script></body>
+</script><script>
+(function(){
+  const v=document.getElementById('palcyaiLaunchVideo');
+  const s=document.getElementById('palcyaiVideoStatus');
+  if(!v||!s)return;
+  v.addEventListener('loadedmetadata',function(){s.textContent='Video ready • '+Math.round(v.duration)+' seconds • '+v.videoWidth+'×'+v.videoHeight;});
+  v.addEventListener('error',function(){s.textContent='Video UI is installed, but the owned media file is not yet reachable from PALCYAI storage.';});
+})();
+</script>
+</body>
 </html>
