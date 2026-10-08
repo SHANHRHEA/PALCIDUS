@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PALCYAI Command Center</title>
+<meta name="description" content="PALCYAI owner command center — ask, plan, route, act and verify.">
+<style>
+:root{--bg:#07121f;--panel:#0c1c2d;--panel2:#10253b;--line:rgba(255,255,255,.10);--text:#eef7ff;--muted:#9db3c7;--accent:#40a9ff;--good:#66e3af;--warn:#ffd66b;--bad:#ff7c8d}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 15% 10%,rgba(64,169,255,.14),transparent 32%),radial-gradient(circle at 85% 12%,rgba(119,87,255,.10),transparent 28%),var(--bg);color:var(--text);font:15px/1.5 Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+button,input,textarea{font:inherit}.shell{min-height:100vh;display:grid;grid-template-columns:280px 1fr}.side{border-right:1px solid var(--line);background:rgba(8,18,31,.78);padding:24px 18px;position:sticky;top:0;height:100vh}.brand{display:flex;align-items:center;gap:12px;margin-bottom:24px}.logo{width:44px;height:44px;border-radius:15px;display:grid;place-items:center;font-weight:900;background:linear-gradient(145deg,#2c9cff,#1956a4)}.brand b{display:block;letter-spacing:.08em}.brand small{color:var(--muted)}.pill{display:inline-flex;padding:7px 10px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.035);font-size:12px;color:var(--muted)}.nav{display:grid;gap:8px;margin-top:18px}.nav button{padding:12px 13px;border:1px solid transparent;border-radius:12px;background:transparent;color:#dbe9f6;text-align:left;cursor:pointer}.nav button:hover{background:rgba(255,255,255,.045);border-color:var(--line)}.side-footer{position:absolute;bottom:20px;left:18px;right:18px;color:var(--muted);font-size:12px}.main{display:flex;flex-direction:column;min-width:0}.top{display:flex;justify-content:space-between;align-items:center;padding:20px 28px;border-bottom:1px solid var(--line);position:sticky;top:0;background:rgba(7,18,31,.88);backdrop-filter:blur(18px);z-index:10}.title h1{margin:0;font-size:1.35rem}.title p{margin:3px 0 0;color:var(--muted);font-size:.85rem}.auth{display:flex;gap:8px;align-items:center}.content{width:min(1100px,100%);margin:0 auto;padding:28px;display:grid;gap:16px;min-height:calc(100vh - 81px)}.welcome{display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center}.welcome h2{margin:0;font-size:2rem}.welcome p{margin:8px 0 0;color:var(--muted);max-width:780px}.quick{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.quick button{padding:9px 11px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.04);color:#d8ebfb;cursor:pointer}.chat{border:1px solid var(--line);border-radius:18px;background:linear-gradient(145deg,rgba(16,37,59,.86),rgba(8,25,41,.94));overflow:hidden;display:grid;grid-template-rows:1fr auto;min-height:520px}.feed{padding:20px;overflow:auto;display:grid;gap:13px;align-content:start}.msg{max-width:90%;padding:13px 15px;border-radius:16px;border:1px solid var(--line);white-space:pre-wrap}.msg.user{justify-self:end;background:#17334f}.msg.ai{background:#0b2237}.meta{font-size:11px;color:var(--muted);margin-bottom:6px}.composer{padding:14px;border-top:1px solid var(--line);display:grid;grid-template-columns:1fr auto;gap:10px}.composer textarea{resize:none;min-height:88px;padding:14px;border-radius:14px;background:#07192a;border:1px solid var(--line);color:#fff;outline:none}.composer textarea:focus{border-color:rgba(64,169,255,.55);box-shadow:0 0 0 3px rgba(64,169,255,.08)}.status{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.card{padding:13px 14px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.03)}.card b{display:block;font-size:.8rem;text-transform:uppercase;letter-spacing:.08em;color:#94acc1}.card span{display:block;margin-top:5px}.dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:7px;background:#677c90}.dot.good{background:var(--good)}.dot.warn{background:var(--warn)}.login{max-width:520px;margin:70px auto}.login .card{padding:24px}.login h2{margin-top:0}.login p{color:var(--muted)}.login input{width:100%;padding:12px;border-radius:12px;border:1px solid var(--line);background:#07192a;color:#fff;margin:9px 0}.btn{border:1px solid var(--line);border-radius:11px;padding:10px 13px;background:#0e2237;color:#fff;cursor:pointer}.btn.primary{background:linear-gradient(135deg,#1886e9,#32a7ff);border-color:transparent}.btn:disabled{opacity:.45;cursor:not-allowed}.notice{padding:12px 14px;border-radius:12px;background:rgba(64,169,255,.08);border:1px solid rgba(64,169,255,.2);color:#cfe6fa;margin-top:12px}.hidden{display:none!important}.small{font-size:12px;color:var(--muted)}a{color:#79c5ff}@media(max-width:850px){.shell{grid-template-columns:1fr}.side{display:none}.content{padding:18px}.status{grid-template-columns:1fr 1fr}.welcome{grid-template-columns:1fr}.top{padding:16px 18px}}
+</style>
+</head>
+<body>
+<div class="shell">
+<aside class="side">
+  <div class="brand"><div class="logo">P</div><div><b>PALCYAI</b><small>Chief Brain Console</small></div></div>
+  <span class="pill" id="sessionPill">● Not signed in</span>
+  <div class="nav">
+    <button onclick="quick('status')">◉ System Status</button>
+    <button onclick="quick('send test email')">✉ Owner Test Email</button>
+    <button onclick="quick('show pending approvals')">✓ Approvals</button>
+    <button onclick="quick('build a growth campaign')">◈ Campaign Builder</button>
+    <button onclick="quick('plan this software change')">⌘ Product Engineering</button>
+  </div>
+  <div class="side-footer">Owner-only action console.<br>External actions remain approval-gated unless explicitly safe/test-only.</div>
+</aside>
+<main class="main">
+<header class="top"><div class="title"><h1>PALCYAI Action Center</h1><p>Ask → Plan → Route → Act → Verify → Record</p></div><div class="auth" id="authArea"></div></header>
+<div id="loginView" class="content login">
+  <div class="card">
+    <h2>Sign in to PALCYAI</h2>
+    <p>This console is for the PALCYAI owner. A Supabase magic link is used; no password is stored here.</p>
+    <input id="loginEmail" type="email" value="patrickpalcidus@gmail.com" autocomplete="email">
+    <button class="btn primary" id="loginBtn">Send magic link</button>
+    <div id="loginMsg" class="notice hidden"></div>
+  </div>
+</div>
+<div id="appView" class="content hidden">
+  <section class="welcome">
+    <div>
+      <h2>Your command becomes an action.</h2>
+      <p>Give PALCYAI a plain-language instruction. The Chief Brain routes it to the correct specialist, records the action and returns execution evidence when a live capability is available.</p>
+      <div class="quick">
+        <button onclick="quick('status')">Check status</button>
+        <button onclick="quick('send test email')">Send owner test email</button>
+        <button onclick="quick('show pending approvals')">Show approvals</button>
+        <button onclick="quick('plan a webinar launch')">Plan webinar</button>
+      </div>
+    </div>
+    <span class="pill">OWNER MODE</span>
+  </section>
+  <section class="chat">
+    <div class="feed" id="feed"><div class="msg ai"><div class="meta">PALCY Chief Brain</div>Ready. Tell me what you want done.</div></div>
+    <form class="composer" id="commandForm"><textarea id="command" placeholder="Example: Check the whole system and tell me what needs action."></textarea><button class="btn primary" id="sendBtn" type="submit">Send ↗</button></form>
+  </section>
+  <section class="status">
+    <div class="card"><b>Authentication</b><span id="sAuth"><i class="dot"></i>Unknown</span></div>
+    <div class="card"><b>Command bridge</b><span id="sBridge"><i class="dot good"></i>Active</span></div>
+    <div class="card"><b>External actions</b><span id="sExternal"><i class="dot warn"></i>Approval-gated</span></div>
+    <div class="card"><b>Last action</b><span id="sAction">—</span></div>
+  </section>
+</div>
+</main>
+</div>
+<script type="module">
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+const SUPABASE_URL='https://yzeomkrvncewnrbvhuui.supabase.co';
+const SUPABASE_PUBLISHABLE_KEY='sb_publishable_ZnvYLFgr4w0TNrgplM6dLQ_sO9ThtD0';
+const COMMAND_URL=SUPABASE_URL+'/functions/v1/palcy-owner-command';
+const sb=createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
+function add(role,text,meta=''){const w=document.createElement('div');w.className='msg '+role;w.innerHTML='<div class="meta">'+esc(meta)+'</div>'+esc(text);$('feed').appendChild(w);$('feed').scrollTop=$('feed').scrollHeight}
+function setSignedIn(on,email=''){ $('sessionPill').textContent=on?'● Signed in':'● Not signed in'; $('loginView').classList.toggle('hidden',on); $('appView').classList.toggle('hidden',!on); $('authArea').innerHTML=on?'<button class="btn" id="signOutBtn">Sign out</button>':''; $('sAuth').innerHTML=on?'<i class="dot good"></i>'+esc(email||'Authenticated'):'<i class="dot"></i>Not signed in'; if(on) $('signOutBtn').onclick=()=>sb.auth.signOut(); }
+window.quick=t=>{if(!$('appView').classList.contains('hidden')){$('command').value=t;$('commandForm').requestSubmit()}};
+async function sendCommand(command){
+ const {data:{session}}=await sb.auth.getSession(); if(!session){add('ai','Please sign in first.','PALCY Chief Brain');return}
+ add('user',command,'You'); $('sendBtn').disabled=true; add('ai','Working…','PALCY Chief Brain'); const placeholder=[...$('feed').querySelectorAll('.msg.ai')].pop();
+ try{
+  const r=await fetch(COMMAND_URL,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+session.access_token},body:JSON.stringify({text:command})});
+  const j=await r.json().catch(()=>({})); placeholder.remove();
+  if(!r.ok){add('ai',j.error||('Command failed with HTTP '+r.status),'PALCY Chief Brain');return}
+  let msg='';
+  if(j.action==='system_status'){
+    msg='SYSTEM STATUS\n\nTest runs: '+(j.data?.test_run_count??0)+'\nRecent actions: '+(j.data?.recent_actions?.length??0)+'\nRecent approvals: '+(j.data?.recent_approvals?.length??0)+'\n\nRoutes: '+(j.routes||[]).join(' | ');
+  } else if(j.action==='email_test'){
+    msg=(j.ok?'EMAIL TEST COMPLETED':'EMAIL TEST FAILED')+'\nProvider: '+(j.provider||'Resend')+'\nAction ID: '+(j.action_id||'—')+'\n'+(j.detail?.response?.id?'Provider message ID: '+j.detail.response.id:'');
+    $('sAction').textContent=j.action_id||'Email test';
+  } else {
+    msg='ACTION QUEUED\nAction ID: '+(j.action_id||'—')+'\nStatus: '+(j.status||'queued')+'\nRoutes: '+(j.routes||[]).join(' | ')+'\n\nThis request is recorded for the appropriate agent and remains approval-gated until a verified executor is available.';
+    $('sAction').textContent=j.action_id||'Queued action';
+  }
+  add('ai',msg,'PALCY Chief Brain');
+ }catch(e){placeholder.remove();add('ai','Connection error: '+e.message,'PALCY Chief Brain')}
+ finally{$('sendBtn').disabled=false}
+}
+$('loginBtn').onclick=async()=>{const email=$('loginEmail').value.trim();if(email!=='patrickpalcidus@gmail.com'){$('loginMsg').textContent='This owner console accepts the configured owner account only.';$('loginMsg').classList.remove('hidden');return}const {error}=await sb.auth.signInWithOtp({email,options:{emailRedirectTo:location.href.split('#')[0]}});$('loginMsg').textContent=error?'Login error: '+error.message:'Magic link sent. Open it from your email, then return to this page.';$('loginMsg').classList.remove('hidden')};
+$('commandForm').onsubmit=e=>{e.preventDefault();const c=$('command').value.trim();if(c){$('command').value='';sendCommand(c)}};
+sb.auth.onAuthStateChange((_event,session)=>setSignedIn(!!session,session?.user?.email||''));const {data:{session}}=await sb.auth.getSession();setSignedIn(!!session,session?.user?.email||'');
+</script>
+</body>
+</html>
