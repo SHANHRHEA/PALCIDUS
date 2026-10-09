@@ -2,7 +2,7 @@
 (async()=>{
   const $=id=>document.getElementById(id), safe=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const URL='https://yzeomkrvncewnrbvhuui.supabase.co', KEY='sb_publishable_ZnvYLFgr4w0TNrgplM6dLQ_sO9ThtD0';
-  let sb,owner=false,busy=false,paused=false,latest=null;
+  let sb,owner=false,busy=false,paused=false,latest=null,sessionEpoch=0;
   const maps={command:'actions',peos:'actions',business:'actions',brains:'agents',agents:'agents',council:'actions',leads:'leads',campaigns:'campaigns',funnels:'funnels',content:'campaigns',webinars:'campaigns',sales:'followups',jobs:'actions',omnichannel:'email',email:'email',voice:'voice',sms:'sms',whatsapp:'tools',calendar:'tools',workflows:'actions',automation:'tools',control:'actions',approvals:'approvals',slack:'tools',analytics:'tests',economics:'economics',knowledge:'skills',memory:'briefs',research:'briefs',engineering:'deployments',cto:'deployments',skillfactory:'skills',agentfactory:'agents',evaluations:'tests',security:'tools',vault:'tools',marketplace:'tools',saas:'tools',settings:'tools'};
   const task=document.createElement('section');task.className='card';task.id='liveConsole';task.innerHTML=`<h2>Chief in Command PALCYAI</h2><p id="liveStatus" role="status">Loading secure sign-in…</p><div id="ownerLogin"><label for="ownerEmail">Owner email</label><input id="ownerEmail" type="email" autocomplete="username" value="patrickpalcidus@gmail.com"><label for="ownerPassword">Password (optional if using a sign-in link)</label><input id="ownerPassword" type="password" autocomplete="current-password"><div class="toolbar"><button class="btn primary" id="loginPassword">Sign in</button><button class="btn" id="loginLink">Email me a sign-in link</button></div></div><div class="toolbar"><button class="btn" id="logoutOwner" hidden>Sign out</button><button class="btn" id="refreshCloud" disabled>Refresh live records</button><button class="btn" id="runSnapshot" disabled>Run system snapshot</button><button class="btn" id="runReadiness" disabled>Run connection report</button></div><p id="refreshTime" class="muted small">No live records loaded yet.</p><div id="runProgress" role="status"></div><div id="runOutput"></div><h3>Work and results</h3><div id="cloudJobs" class="list">Sign in to view saved work.</div>`;
   $('command').prepend(task);
@@ -37,8 +37,8 @@
     }).join('');
   }
   async function refresh(){
-    if(!owner||busy||document.hidden)return;busy=true;
-    try{const r=await api({action:'dashboard'});latest=r;paused=r.controls?.paused===true;const actions=r.sections.find(s=>s.key==='actions');$('cloudJobs').innerHTML=actions.error?'<p>Work records could not be read.</p>':renderRows(actions.rows,'actions');$('feed').innerHTML=actions.error?'<p>Audit unavailable.</p>':actions.rows.slice(0,10).map(a=>`<div class="event"><b>${safe(a.title)}</b> · ${safe(a.status)}<div class="muted small">${safe(time(a.created_at))}</div></div>`).join('');$('approvalList').innerHTML=renderRows(r.sections.find(s=>s.key==='approvals')?.rows||[],'approvals');$('refreshTime').textContent='Live data read '+time(r.generated_at)+'. Refreshes every 15 seconds while this page is visible.';$('stopBtn').textContent=paused?'Resume new dispatches':'Pause new dispatches';$('liveStatus').textContent='Owner signed in · Supabase connected';}
+    if(!owner||busy||document.hidden)return;busy=true;const epoch=sessionEpoch;
+    try{const r=await api({action:'dashboard'});if(!owner||epoch!==sessionEpoch)return;latest=r;paused=r.controls?.paused===true;const actions=r.sections.find(s=>s.key==='actions');$('cloudJobs').innerHTML=actions.error?'<p>Work records could not be read.</p>':renderRows(actions.rows,'actions');$('feed').innerHTML=actions.error?'<p>Audit unavailable.</p>':actions.rows.slice(0,10).map(a=>`<div class="event"><span class="dot"></span><div><b>${safe(a.title)}</b><div class="muted small">${safe(time(a.created_at))}</div></div><span class="tag">${safe(a.status)}</span></div>`).join('');$('approvalList').innerHTML=renderRows(r.sections.find(s=>s.key==='approvals')?.rows||[],'approvals');$('refreshTime').textContent='Live data read '+time(r.generated_at)+'. Refreshes every 15 seconds while this page is visible.';$('stopBtn').textContent=paused?'Resume new dispatches':'Pause new dispatches';$('liveStatus').textContent='Owner signed in · Supabase connected';}
     catch(e){$('liveStatus').textContent=e.message;$('refreshTime').textContent='Refresh failed. Previously displayed records may be stale.';}
     finally{busy=false;}
   }
@@ -46,15 +46,15 @@
   async function run(operation,extra={}){
     const key=JSON.stringify({operation,...extra});if(pendingRuns.get(key)?.running)return;
     let state=pendingRuns.get(key)||{id:crypto.randomUUID()};state.running=true;pendingRuns.set(key,state);
-    showView('command');const start=performance.now();$('runOutput').textContent='';
+    showView('command');const epoch=sessionEpoch,start=performance.now();$('runOutput').textContent='';
     const tick=()=>{$('runProgress').textContent='Running '+operation.replaceAll('_',' ')+' · '+((performance.now()-start)/1000).toFixed(1)+' seconds';};tick();const timer=setInterval(tick,200);
-    try{const r=await api({action:'run',operation,request_id:state.id,...extra});pendingRuns.delete(key);$('runOutput').innerHTML=`<h3>${safe(r.job.status)}</h3><p>Saved reference: ${safe(r.job.action_id)}</p><pre style="white-space:pre-wrap;overflow-wrap:anywhere">${safe(JSON.stringify(r.job.result,null,2))}</pre>`;$('runProgress').textContent='Server result: '+r.job.status+' · '+duration(r.job);await refresh();}
+    try{const r=await api({action:'run',operation,request_id:state.id,...extra});pendingRuns.delete(key);if(!owner||epoch!==sessionEpoch)return;$('runOutput').innerHTML=`<h3>${safe(r.job.status)}</h3><p>Saved reference: ${safe(r.job.action_id)}</p><pre style="white-space:pre-wrap;overflow-wrap:anywhere">${safe(JSON.stringify(r.job.result,null,2))}</pre>`;$('runProgress').textContent='Server result: '+r.job.status+' · '+duration(r.job);await refresh();}
     catch(e){$('runProgress').textContent=e.message+' · Retry keeps the same request reference.';}
     finally{clearInterval(timer);state.running=false;}
   }
   async function openModule(name,view){
-    $('liveModuleTitle').textContent=name;const key=maps[view]||'tools';$('liveModuleNote').textContent='Loading '+(friendly[key]||key)+'…';$('liveModuleBody').textContent='';modal.showModal();
-    try{const r=await api({action:'dataset',dataset:key});if(r.error)throw Error('This data source is unavailable.');$('liveModuleNote').textContent='Live '+(friendly[key]||key)+' · '+time(r.generated_at)+' · latest 50. Definitions and drafts do not prove execution.';$('liveModuleBody').innerHTML=renderRows(r.rows,key);}
+    $('liveModuleTitle').textContent=name;const epoch=sessionEpoch,key=maps[view]||'tools';$('liveModuleNote').textContent='Loading '+(friendly[key]||key)+'…';$('liveModuleBody').textContent='';modal.showModal();
+    try{const r=await api({action:'dataset',dataset:key});if(!owner||epoch!==sessionEpoch)return;if(r.error)throw Error('This data source is unavailable.');$('liveModuleNote').textContent='Live '+(friendly[key]||key)+' · '+time(r.generated_at)+' · latest 50. Definitions and drafts do not prove execution.';$('liveModuleBody').innerHTML=renderRows(r.rows,key);}
     catch(e){$('liveModuleNote').textContent=e.message;}
   }
   // Every Open card now opens a real data drawer, replacing the original static toast.
@@ -78,6 +78,7 @@
   $('saveCreate').onclick=async()=>{const b=$('saveCreate');if(b.disabled)return;b.disabled=true;try{definitionKey ||= crypto.randomUUID();const r=await api({action:'save_definition',request_id:definitionKey,kind:$('createType').value,name:$('createName').value,description:$('createDesc').value});definitionKey=null;$('modal').classList.remove('open');$('commandResult').textContent=r.message||'Definition already saved.';await refresh();}catch(e){$('commandResult').textContent=e.message;}finally{b.disabled=false;}};
   for(const id of ['createName','createDesc'])$(id).addEventListener('input',()=>{definitionKey=null;});
   async function sessionChanged(session){
+    sessionEpoch++;
     owner=!!session&&session.user?.email?.toLowerCase()==='patrickpalcidus@gmail.com';
     if(session&&!owner)await sb.auth.signOut();
     $('ownerLogin').hidden=owner;$('logoutOwner').hidden=!owner;
