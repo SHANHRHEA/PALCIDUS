@@ -124,8 +124,8 @@ function fillList(id,rows,mapper,emptyText){
 }
 function renderStatus(response){
  const d=response?.data||{},emails=d.email_events||[],sms=d.sms_events||[],inbound=d.inbound_emails||[],intakes=d.latest_intakes||[],tests=d.latest_tests||[],controls=d.system_controls||[];
- const latestEmail=emails[0],latestSms=sms[0],latestInbound=inbound[0],paused=controls.some(x=>x.paused===true);
- $('mHealth').textContent=response?.ok?'LIVE':'UNKNOWN';$('mHealthNote').textContent='Owner API response · '+fmtDate(response.generated_at);
+ const latestEmail=emails[0],latestSms=sms[0],latestInbound=inbound[0],paused=d.effective_pause_all===true||controls.some(x=>x.paused===true||x.enabled===false)||trustSafetyControls.some(x=>x.pause_all===true);
+ $('mHealth').textContent=response?.ok?(d.query_warnings?.length?'DEGRADED':'LIVE'):'UNKNOWN';$('mHealthNote').textContent=(d.query_warnings?.length?'Partial source queries: '+d.query_warnings.join(', ')+' · ':'Owner API response · ')+fmtDate(response.generated_at);
  $('mEmail').textContent=latestEmail?String(latestEmail.status||latestEmail.event_type||'RECORDED').toUpperCase():'NO EVENTS';$('mEmailNote').textContent=latestEmail?String(latestEmail.event_type||'')+' · '+fmtDate(latestEmail.created_at):'No email event rows returned';
  $('mSms').textContent=latestSms?String(latestSms.callback_status||latestSms.status||'RECORDED').toUpperCase():'NO EVENTS';$('mSmsNote').textContent=latestSms?String(latestSms.provider||'provider')+' · '+String(latestSms.role||'outbound'):'No SMS row returned';
  $('mInbound').textContent=latestInbound?String(latestInbound.status||'RECORDED').toUpperCase():'NO EVENTS';$('mInboundNote').textContent=latestInbound?fmtDate(latestInbound.received_at):'No inbound email record returned';
