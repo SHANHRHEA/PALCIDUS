@@ -733,16 +733,20 @@ async function submitLead(e) {
     const name = $('leadName').value.trim(),
           email = $('leadEmail').value.trim(),
           phone = $('leadPhone').value.trim(),
-          consent = $('leadConsent').checked;
+          consent = $('leadConsent').checked,
+          smsConsent = $('leadSmsConsent').checked;
     if (!name || !email) { $('leadStatus').textContent = 'Please enter your first name and email.'; return }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { $('leadStatus').textContent = 'Please enter a valid email address.'; return }
     if (!consent) { $('leadStatus').textContent = 'Please confirm consent to unlock your requested guide.'; return }
+    if (smsConsent && !/^\+[1-9]\d{7,14}$/.test(phone)) { $('leadStatus').textContent = 'For optional SMS follow-up, enter a valid mobile number in international format (for example, +19055550123), or leave the SMS box unchecked.'; return }
 
     const priority = state.priority || 'general';
     const language = (currentLanguage().code || 'en').slice(0,2);
     const idempotencyKey = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : ('palcy-' + Date.now() + '-' + Math.random().toString(36).slice(2));
     state.lead = {
         firstName: name, email, phone, consent: true,
+        smsConsent,
+        smsConsentTextVersion: smsConsent ? 'advisor-sms-consent-v1' : null,
         selectedPriority: priority, language,
         source: new URLSearchParams(location.search).get('source') || 'website',
         campaign: 'v2.6.11-client',
@@ -773,6 +777,11 @@ async function submitLead(e) {
         $('leadStatus').textContent = result.external_actions_performed
           ? 'Your request was securely received and your requested email actions were dispatched.'
           : 'Your request was securely received. Email delivery is being finalized securely.';
+        if (smsConsent && result.sms_notifications?.client === 'failed') {
+          $('leadStatus').textContent += ' The optional text message could not be confirmed; your guide remains available here and email is unaffected.';
+        } else if (smsConsent && ['queued','sending','sent'].includes(result.sms_notifications?.client)) {
+          $('leadStatus').textContent += ' Your optional text message was accepted; delivery status is being confirmed.';
+        }
         $('thankName').textContent = name;
         $('giftExternal').href = CFG.giftUrl;
         $('giftBook').href = CFG.bookingUrl;
@@ -923,6 +932,7 @@ document.addEventListener('DOMContentLoaded',init);
             <label>Email<input class="field" id="leadEmail" type="email" autocomplete="email" placeholder="you@example.com" required></label>
             <label class="full">Mobile (optional)<input class="field" id="leadPhone" autocomplete="tel" placeholder="+1 ..."></label>
             <label class="consent full"><input id="leadConsent" type="checkbox"> <span>I consent to PALCIDUSAI using these details to deliver the educational guide/review I requested and to follow up about this request. I understand personalized regulated recommendations require appropriate human review. <a href="/privacy.html" target="_blank" rel="noopener">Privacy notice</a> · <a href="/data-rights.html" target="_blank" rel="noopener">Data rights</a>.</span></label>
+            <label class="consent full"><input id="leadSmsConsent" type="checkbox"> <span><b>Optional SMS consent:</b> I agree to receive text messages from PALCIDUSAI by Palcidus Patrick about this request at the mobile number above. Message/data rates may apply. Reply STOP to opt out. This is optional and is not required to receive the guide.</span></label>
           </div>
           <div class="form-status" id="leadStatus"></div>
           <div class="button-row"><button class="primary" type="submit">Unlock My Free Guide →</button><button class="ghost" id="contactBack" type="button">← Back</button></div>
