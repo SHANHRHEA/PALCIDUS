@@ -2,7 +2,7 @@
 (async()=>{
   const $=id=>document.getElementById(id), safe=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const URL='https://yzeomkrvncewnrbvhuui.supabase.co', KEY='sb_publishable_ZnvYLFgr4w0TNrgplM6dLQ_sO9ThtD0';
-  let sb,owner=false,busy=false,paused=false,latest=null,sessionEpoch=0;
+  let sb,owner=false,busy=false,paused=false,latest=null,sessionEpoch=0,taskBoard;
   const maps={command:'actions',peos:'actions',business:'actions',brains:'agents',agents:'agents',council:'actions',leads:'leads',campaigns:'campaigns',funnels:'funnels',content:'campaigns',webinars:'campaigns',sales:'followups',jobs:'actions',omnichannel:'email',email:'email',voice:'voice',sms:'sms',whatsapp:'tools',calendar:'tools',workflows:'actions',automation:'tools',control:'actions',approvals:'approvals',slack:'tools',analytics:'tests',economics:'economics',knowledge:'skills',memory:'briefs',research:'briefs',engineering:'deployments',cto:'deployments',skillfactory:'skills',agentfactory:'agents',evaluations:'tests',security:'tools',vault:'tools',marketplace:'tools',saas:'tools',settings:'tools'};
   const task=document.createElement('section');task.className='card';task.id='liveConsole';task.innerHTML=`<h2>Chief in Command PALCYAI</h2><p id="liveStatus" role="status">Loading secure sign-in…</p><div id="ownerLogin"><label for="ownerEmail">Owner email</label><input id="ownerEmail" type="email" autocomplete="username" value="patrickpalcidus@gmail.com"><label for="ownerPassword">Password (optional if using a sign-in link)</label><input id="ownerPassword" type="password" autocomplete="current-password"><div class="toolbar"><button class="btn primary" id="loginPassword">Sign in</button><button class="btn" id="loginLink">Email me a sign-in link</button></div></div><div class="toolbar"><button class="btn" id="logoutOwner" hidden>Sign out</button><button class="btn" id="refreshCloud" disabled>Refresh live records</button><button class="btn" id="runSnapshot" disabled>Run system snapshot</button><button class="btn" id="runReadiness" disabled>Run connection report</button></div><p id="refreshTime" class="muted small">No live records loaded yet.</p><div id="runProgress" role="status"></div><div id="runOutput"></div><h3>Work and results</h3><div id="cloudJobs" class="list">Sign in to view saved work.</div>`;
   $('command').prepend(task);
@@ -54,24 +54,28 @@
   }
   async function openModule(name,view){
     $('liveModuleTitle').textContent=name;const epoch=sessionEpoch,key=maps[view]||'tools';$('liveModuleNote').textContent='Loading '+(friendly[key]||key)+'…';$('liveModuleBody').textContent='';modal.showModal();
-    try{const r=await api({action:'dataset',dataset:key});if(!owner||epoch!==sessionEpoch)return;if(r.error)throw Error('This data source is unavailable.');$('liveModuleNote').textContent='Live '+(friendly[key]||key)+' · '+time(r.generated_at)+' · latest 50. Definitions and drafts do not prove execution.';$('liveModuleBody').innerHTML=renderRows(r.rows,key);}
+    try{const r=await api({action:'module_records',module:view||'command'});if(!owner||epoch!==sessionEpoch)return;if(r.error)throw Error('This data source is unavailable.');$('liveModuleNote').textContent=r.note+' Checked '+time(r.generated_at)+'.';$('liveModuleBody').innerHTML=renderRows(r.rows,key);}
     catch(e){$('liveModuleNote').textContent=e.message;}
   }
   // Every Open card now opens a real data drawer, replacing the original static toast.
   document.addEventListener('click',e=>{
+    const nav=e.target.closest('button[data-view]');if(nav){$('commandInput').value='';$('commandResult').textContent='New role selected. Campaign builds execute; unsupported requests remain saved plans.';$('runOutput').textContent='';$('runProgress').textContent='';$('liveModuleBody').textContent='';if(modal.open)modal.close();}
     const b=e.target.closest('[data-open-item]');if(b){e.preventDefault();e.stopImmediatePropagation();openModule(b.dataset.openItem,b.closest('.view')?.id);}
     const lead=e.target.closest('[data-brief-id]');if(lead){modal.close();run('priority_brief',{lead_id:lead.dataset.briefId});}
   },true);
   for(const view of document.querySelectorAll('.view')){
     if(['command','launchvideo'].includes(view.id))continue;
     const bar=document.createElement('div');bar.className='notice';bar.style.marginBottom='16px';
-    bar.innerHTML=`<button class="btn" data-live-view="${view.id}">View live ${safe(friendly[maps[view.id]]||'records')}</button> <span class="small">Records, saved results and connection state</span>`;view.prepend(bar);
+    const backed=['leads','campaigns','funnels','email','sms','voice','sales','approvals','evaluations'].includes(view.id);
+    bar.innerHTML=`<button class="btn" data-live-view="${view.id}">${backed?'View records for this module':'View requests for this role'}</button> <span class="small">${view.id==='campaigns'?'Campaign draft builder is connected. Publishing is separate.':backed?'Saved database records; individual capabilities need their own execution evidence.':'Blueprint capabilities below. This role has no connected executor yet; requests will not be shown as completed work.'}</span>`;view.prepend(bar);
     bar.querySelector('button').onclick=()=>openModule(view.querySelector('h2')?.textContent||view.id,view.id);
   }
-  $('runCommand').textContent='Save command to cloud';$('runCommand').onclick=()=>run('command_plan',{title:$('commandInput').value});
+  $('runCommand').textContent='Run campaign build / save other plan';$('runCommand').onclick=()=>{const title=$('commandInput').value;if(taskBoard&&/\b(build|create|draft)\b[\s\S]*\bcampaign\b/i.test(title)){taskBoard.buildFromCommand(title);return;}run('command_plan',{title});};
   $('runSnapshot').onclick=()=>run('system_snapshot');$('runReadiness').onclick=()=>run('readiness_report');$('refreshCloud').onclick=refresh;
   $('testEndpoint').onclick=()=>run('readiness_report');$('saveEndpoint').onclick=()=>{$('endpointState').textContent='The verified project connection is fixed. Arbitrary endpoints are not used.';};$('endpointInput').value=URL+'/functions/v1/palcy-chief-command';$('endpointInput').readOnly=true;
   $('saveLead').textContent='Open live prospect records';$('saveLead').onclick=()=>openModule('Prospects','leads');
+  const booking=document.createElement('a');booking.className='btn primary';booking.href='https://cal.com/palcidus-patrick-3pee3f/30min';booking.target='_blank';booking.rel='noopener';booking.textContent='Open Cal.com appointments';$('calendar').prepend(booking);
+  const blueprint=document.createElement('p');blueprint.className='notice';blueprint.textContent='The architecture counts and capability cards below come from your supplied blueprint. They are design targets, not live agent or automation counts. The task engine above reports actual runs and saved results.';document.querySelector('#command .grid')?.before(blueprint);
   $('emailTestBtn').textContent='View email delivery records';$('emailTestBtn').onclick=()=>openModule('Email delivery','email');
   $('stopBtn').onclick=async()=>{try{const r=await api({action:'pause',paused:!paused});$('commandResult').textContent=r.scope;await refresh();}catch(e){$('commandResult').textContent=e.message;}};
   let definitionKey=null;
@@ -80,6 +84,7 @@
   async function sessionChanged(session){
     sessionEpoch++;
     owner=!!session&&session.user?.email?.toLowerCase()==='patrickpalcidus@gmail.com';
+    window.dispatchEvent(new Event('palcy-owner-session'));
     if(session&&!owner)await sb.auth.signOut();
     $('ownerLogin').hidden=owner;$('logoutOwner').hidden=!owner;
     for(const id of ['refreshCloud','runSnapshot','runReadiness'])$(id).disabled=!owner;
@@ -87,6 +92,8 @@
     if(owner)await refresh();else{$('cloudJobs').textContent='Sign in to view saved work.';$('runOutput').textContent='';$('feed').textContent='Sign in for activity.';$('approvalList').textContent='Sign in for approvals.';$('liveModuleBody').textContent='';$('refreshTime').textContent='No live records loaded.';latest=null;}
   }
   try{
+    const {mountTaskBoard}=await import('./palcyai-tasks.js');
+    taskBoard=mountTaskBoard({api,isOwner:()=>owner});
     const {createClient}=await import('https://esm.sh/@supabase/supabase-js@2.99.2');
     sb=createClient(URL,KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
     $('loginPassword').onclick=async()=>{try{const email=$('ownerEmail').value.trim().toLowerCase();if(email!=='patrickpalcidus@gmail.com')throw Error('Use the owner account.');const password=$('ownerPassword').value;const {error}=await sb.auth.signInWithPassword({email,password});$('ownerPassword').value='';if(error)throw error;}catch(e){$('liveStatus').textContent=e.message;}};
