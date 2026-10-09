@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<title>PALCYAI Live Control Center</title>
+<style>
+:root{color-scheme:dark;--bg:#070d18;--panel:#101a2b;--line:#243651;--text:#eff5ff;--muted:#9fb0c8;--accent:#7b82ff;--cyan:#47d9ec;--good:#5ee0a4;--warn:#ffd16f;--bad:#ff7889}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 10% 0%,#182751 0,transparent 34%),radial-gradient(circle at 95% 20%,#073342 0,transparent 28%),var(--bg);color:var(--text);font:14px/1.55 Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}button,input,textarea{font:inherit}button{cursor:pointer}a{color:#9eb5ff;text-decoration:none}a:hover{text-decoration:underline}.shell{max-width:1480px;margin:auto;padding:24px}.top{display:flex;gap:18px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-bottom:20px}.brand{display:flex;align-items:center;gap:13px}.logo{width:46px;height:46px;border-radius:15px;background:linear-gradient(135deg,var(--accent),var(--cyan));box-shadow:0 0 36px #4a9dff40;display:grid;place-items:center;color:#081426;font-weight:1000;font-size:20px}.brand h1{font-size:23px;margin:0;letter-spacing:-.04em}.brand p{margin:2px 0 0;color:var(--muted);font-size:12px}.topright{display:flex;gap:9px;align-items:center;flex-wrap:wrap}.pill{display:inline-flex;align-items:center;gap:7px;padding:7px 10px;border:1px solid var(--line);border-radius:999px;color:var(--muted);font-size:12px}.dot{width:8px;height:8px;border-radius:50%;background:var(--warn);display:inline-block}.dot.good{background:var(--good)}.dot.bad{background:var(--bad)}.btn{border:1px solid #314563;background:#132039;color:var(--text);border-radius:11px;padding:10px 13px;font-weight:650;transition:.15s}.btn:hover{filter:brightness(1.15);transform:translateY(-1px)}.btn.primary{border-color:transparent;background:linear-gradient(120deg,#6b6ff4,#258aa3)}.btn.good{border-color:#235e4d;background:#102c2a}.btn.warn{border-color:#6e572c;background:#302718}.btn:disabled{opacity:.45;cursor:not-allowed;transform:none}.grid{display:grid;gap:13px}.stats{grid-template-columns:repeat(5,minmax(0,1fr));margin:15px 0}.layout{display:grid;grid-template-columns:270px minmax(0,1fr);gap:16px}.card{background:linear-gradient(145deg,#111c2eeb,#0b1423ee);border:1px solid var(--line);border-radius:17px;padding:17px;box-shadow:0 18px 55px #0004}.sidegrid{display:grid;align-content:start;gap:13px}.main{min-width:0}.metric .label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}.metric .value{font-size:25px;font-weight:850;letter-spacing:-.04em;margin-top:4px;word-break:break-word}.metric .note{font-size:11px;color:var(--muted);margin-top:4px}.sectiontitle{font-size:15px;margin:0 0 12px;display:flex;align-items:center;justify-content:space-between;gap:9px}.muted{color:var(--muted)}.tiny{font-size:11px}.field{display:grid;gap:5px;margin:11px 0}.field label{font-size:12px;color:var(--muted)}input,textarea{width:100%;background:#070f1d;color:var(--text);border:1px solid #304260;border-radius:10px;padding:11px 12px;outline:none}input:focus,textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px #7b82ff22}textarea{min-height:85px;resize:vertical}.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.stack{display:grid;gap:9px}.links{display:grid;gap:8px}.linkbtn{display:flex;justify-content:space-between;gap:8px;align-items:center;border:1px solid var(--line);border-radius:10px;padding:10px 11px;background:#0a1322;color:#dfeaff;text-decoration:none}.linkbtn:hover{background:#13223b;text-decoration:none}.hide{display:none!important}.small{font-size:12px}.warning{padding:11px;border-radius:11px;border:1px solid #6f592f;background:#2b2417;color:#ffe3a3;margin:12px 0}.successbox{padding:11px;border-radius:11px;border:1px solid #225a47;background:#0c2925;color:#b9ffe0;margin:12px 0}.errorbox{padding:11px;border-radius:11px;border:1px solid #713d4b;background:#2a141d;color:#ffc7d0;margin:12px 0}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 13px}.tab{padding:9px 12px;border-radius:999px;border:1px solid var(--line);background:#0b1423;color:var(--muted)}.tab.active{color:white;border-color:#777fff;background:#262956}.pane{display:none}.pane.active{display:block}.eventlist{display:grid;gap:9px}.event{border:1px solid var(--line);border-radius:12px;background:#091321;padding:11px}.eventtop{display:flex;gap:12px;justify-content:space-between;align-items:start}.eventtitle{font-weight:750;word-break:break-word}.eventmeta{font-size:11px;color:var(--muted);margin-top:4px;word-break:break-word}.status{font-size:10px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;border-radius:999px;padding:4px 7px;background:#202c43;color:#b8c8e2;white-space:nowrap}.status.good{background:#10332b;color:#9ff3ce}.status.wait{background:#342a17;color:#ffdda0}.status.bad{background:#3b1c26;color:#ffc4ce}.status.info{background:#142b48;color:#b8d7ff}.meterbar{height:5px;background:#1b2840;border-radius:999px;overflow:hidden;margin-top:8px}.meterbar span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--cyan));transition:width .15s}.resultpre{white-space:pre-wrap;word-break:break-word;background:#050b14;border:1px solid #26344c;border-radius:9px;padding:9px;margin:9px 0 0;color:#c5d6ef;max-height:260px;overflow:auto;font:11px/1.45 ui-monospace,SFMono-Regular,Consolas,monospace}.empty{border:1px dashed #33445e;border-radius:12px;padding:20px;text-align:center;color:var(--muted)}.foot{color:var(--muted);font-size:11px;margin:18px 0 6px;line-height:1.6}.count{border-radius:8px;padding:2px 7px;background:#1a2941;color:#c9d8f5;font-size:11px}@media(max-width:1100px){.stats{grid-template-columns:repeat(3,minmax(0,1fr))}.layout{grid-template-columns:1fr}.sidegrid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:700px){.shell{padding:13px}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.sidegrid{grid-template-columns:1fr}.brand h1{font-size:20px}.topright{width:100%}.topright .btn{flex:1}}
+</style>
+</head>
+<body>
+<div class="shell">
+<header class="top">
+ <div class="brand"><div class="logo">P</div><div><h1>PALCYAI <span style="color:var(--cyan)">LIVE CONTROL</span></h1><p>Owner command · verified provider events · evidence-backed status</p></div></div>
+ <div class="topright"><span id="sessionPill" class="pill"><span class="dot"></span> Not signed in</span><button id="refreshBtn" class="btn" disabled>↻ Refresh live status</button><button id="signOutBtn" class="btn hide">Sign out</button></div>
+</header>
+<div id="loginBox" class="card">
+ <h2 class="sectiontitle">Secure owner sign-in <span class="status info">Owner-only</span></h2>
+ <p class="muted">Use the owner email to receive a Supabase sign-in link. This page never asks for your password or API key. The backend verifies the signed-in account before returning live project records or running a controlled action.</p>
+ <div class="field"><label for="loginEmail">Owner email</label><input id="loginEmail" type="email" autocomplete="email" value="patrickpalcidus@gmail.com"></div>
+ <div class="row"><button id="loginBtn" class="btn primary">Send secure sign-in link</button><span id="loginTimer" class="tiny muted"></span></div>
+ <div id="loginMessage" class="small muted" aria-live="polite" style="margin-top:10px"></div>
+ <div class="warning">Read-only buttons never send messages. The owner email test sends one real email only when clicked. Other free-text commands are saved as approval-gated actions; queued does not mean executed.</div>
+</div>
+<div id="workspace" class="hide">
+ <div class="grid stats">
+  <article class="card metric"><div class="label">Backend health</div><div id="mHealth" class="value">UNKNOWN</div><div id="mHealthNote" class="note">Awaiting live check</div></article>
+  <article class="card metric"><div class="label">Email event</div><div id="mEmail" class="value">UNKNOWN</div><div id="mEmailNote" class="note">Awaiting webhook records</div></article>
+  <article class="card metric"><div class="label">SMS event</div><div id="mSms" class="value">UNKNOWN</div><div id="mSmsNote" class="note">Awaiting provider callback</div></article>
+  <article class="card metric"><div class="label">Inbound email</div><div id="mInbound" class="value">UNKNOWN</div><div id="mInboundNote" class="note">Awaiting inbound record</div></article>
+  <article class="card metric"><div class="label">Test runs</div><div id="mTests" class="value">—</div><div id="mTestsNote" class="note">Supabase source of truth</div></article>
+ </div>
+ <div class="layout">
+  <aside class="sidegrid">
+   <div class="card"><h2 class="sectiontitle">Run live checks</h2><div class="stack">
+    <button id="healthBtn" class="btn primary">Run backend + database health</button>
+    <button id="domainBtn" class="btn">Check Resend domain / DNS</button>
+    <button id="smsBtn" class="btn">Check latest SMS delivery</button>
+    <button id="inboundBtn" class="btn">Check inbound email</button>
+    <button id="statusBtn" class="btn">Load system status</button>
+   </div><p class="tiny muted">Read-only checks query live services; they do not send messages.</p></div>
+   <div class="card"><h2 class="sectiontitle">Live project links</h2><div class="links">
+    <button class="linkbtn" data-open-url="https://advisor-financial-insurance.pages.dev/">Advisor intake form <span>↗</span></button>
+    <button class="linkbtn" data-open-url="https://resend.com/domains">Resend domains <span>↗</span></button>
+    <button class="linkbtn" data-open-url="https://resend.com/automations">Resend automations <span>↗</span></button>
+    <button class="linkbtn" data-open-url="https://docs.google.com/spreadsheets/d/1uPO59GSsBV52_NCscuXRJm06eEX_cBDgv3K7nWWPJ4I/edit?gid=476536733#gid=476536733">Google Master Control Sheet <span>↗</span></button>
+    <button class="linkbtn" data-open-url="https://supabase.com/dashboard/project/yzeomkrvncewnrbvhuui">Supabase project <span>↗</span></button>
+    <button class="linkbtn" data-open-url="https://github.com/SHANHRHEA/PALCIDUSAI_ADVISOR_OS">PALCYAI Advisor OS source <span>↗</span></button>
+    <button class="linkbtn" data-open-url="https://github.com/SHANHRHEA/PALCIDUS">Public frontend source <span>↗</span></button>
+   </div></div>
+  </aside>
+  <main class="main">
+   <div class="card">
+    <div class="sectiontitle"><span>Owner command runner</span><span class="status info">Authenticated API</span></div>
+    <p class="muted small">“Send owner test email” calls Resend. Live status/domain checks are read-only. Other commands create an approval-required action for the agent/worker to consume; they do not claim execution until a dedicated executor is verified.</p>
+    <div class="row" style="margin-bottom:10px"><button class="btn good" data-command="system status">Live system status</button><button class="btn good" data-command="domain status">Live domain status</button><button class="btn warn" data-command="send test email">Send one owner test email</button></div>
+    <form id="commandForm"><div class="field"><label for="commandInput">Ask PALCYAI to do something</label><textarea id="commandInput" placeholder="Example: prepare a social campaign plan. This records/routes the task; publishing stays approval-gated until a verified executor is connected."></textarea></div><div class="row"><button id="runCommandBtn" type="submit" class="btn primary">Run / queue command</button><span class="tiny muted">Timer and actual API result appear below.</span></div></form>
+   </div>
+   <div class="tabs"><button class="tab active" data-pane="actionsPane">Action results</button><button class="tab" data-pane="emailsPane">Email events</button><button class="tab" data-pane="smsPane">SMS</button><button class="tab" data-pane="inboundPane">Inbound email</button><button class="tab" data-pane="intakePane">Form / audit</button><button class="tab" data-pane="testsPane">Test runs</button><button class="tab" data-pane="approvalsPane">Approvals</button></div>
+   <section id="actionsPane" class="pane active card"><h2 class="sectiontitle">Actions, timers and results <span id="runCount" class="count">0</span></h2><div id="actionResults" class="eventlist"><div class="empty">Sign in and run a live check to populate this panel.</div></div></section>
+   <section id="emailsPane" class="pane card"><h2 class="sectiontitle">Resend email events</h2><div id="emailList" class="eventlist"><div class="empty">Waiting for live Supabase event records.</div></div></section>
+   <section id="smsPane" class="pane card"><h2 class="sectiontitle">SMS provider events</h2><div id="smsList" class="eventlist"><div class="empty">Waiting for live Twilio delivery records.</div></div></section>
+   <section id="inboundPane" class="pane card"><h2 class="sectiontitle">Inbound email records</h2><div id="inboundList" class="eventlist"><div class="empty">Waiting for inbound provider events.</div></div></section>
+   <section id="intakePane" class="pane card"><h2 class="sectiontitle">Advisor form / audit events</h2><div id="intakeList" class="eventlist"><div class="empty">Waiting for live intake/audit data.</div></div></section>
+   <section id="testsPane" class="pane card"><h2 class="sectiontitle">Recorded test runs</h2><div id="testList" class="eventlist"><div class="empty">Waiting for Supabase test evidence.</div></div></section>
+   <section id="approvalsPane" class="pane card"><h2 class="sectiontitle">Approvals queue</h2><div id="approvalList" class="eventlist"><div class="empty">Waiting for live approval data.</div></div></section>
+  </main>
+ </div>
+</div>
+<div class="foot">PALCYAI · private owner console · dashboard response omits lead email addresses and phone numbers. Open links are navigation only. The source-of-truth provider/database response determines all status badges. <span id="updatedAt"></span></div>
+</div>
+<script type="module">
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+const SUPABASE_URL='https://yzeomkrvncewnrbvhuui.supabase.co';
+const SUPABASE_PUBLISHABLE_KEY='sb_publishable_ZnvYLFgr4w0TNrgplM6dLQ_sO9ThtD0';
+const OWNER_EMAIL='patrickpalcidus@gmail.com';
+const OWNER_COMMAND_URL=SUPABASE_URL+'/functions/v1/palcy-owner-command';
+const HEALTH_URL=SUPABASE_URL+'/functions/v1/advisor-health';
+const sb=createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+const $=id=>document.getElementById(id);
+let runCounter=0;
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmtDate=v=>{if(!v)return '—';const d=new Date(v);return Number.isNaN(d.getTime())?String(v):d.toLocaleString()};
+const fmtElapsed=v=>(v/1000).toFixed(2)+' s';
+function setSession(session){
+ const owner=!!session&&String(session.user?.email||'').toLowerCase()===OWNER_EMAIL;
+ $('sessionPill').innerHTML='<span class="dot '+(owner?'good':'')+'"></span>'+(owner?'Signed in as owner':'Not signed in');
+ $('loginBox').classList.toggle('hide',owner);$('workspace').classList.toggle('hide',!owner);$('refreshBtn').disabled=!owner;$('signOutBtn').classList.toggle('hide',!owner);
+ if(session&&!owner){$('loginMessage').textContent='Owner-only page. Signing out the non-owner session.';sb.auth.signOut()}
+}
+async function currentSession(){const {data,error}=await sb.auth.getSession();if(error)throw error;return data.session}
+async function callOwner(command){
+ const session=await currentSession();if(!session)throw new Error('Owner sign-in required.');
+ const response=await fetch(OWNER_COMMAND_URL,{method:'POST',headers:{'Content-Type':'application/json','apikey':SUPABASE_PUBLISHABLE_KEY,'Authorization':'Bearer '+session.access_token},body:JSON.stringify({text:command})});
+ const body=await response.json().catch(()=>({}));if(!response.ok)throw new Error(body.error||('Owner command HTTP '+response.status));return body;
+}
+async function callHealth(){
+ const session=await currentSession();if(!session)throw new Error('Owner sign-in required.');
+ const response=await fetch(HEALTH_URL,{method:'GET',headers:{'apikey':SUPABASE_PUBLISHABLE_KEY,'Authorization':'Bearer '+session.access_token}});
+ const body=await response.json().catch(()=>({}));if(!response.ok)throw new Error(body.error||('Health check HTTP '+response.status));return body;
+}
+function addRun(label){
+ runCounter++;$('runCount').textContent=String(runCounter);
+ const row=document.createElement('article');row.className='event';
+ row.innerHTML='<div class="eventtop"><div><div class="eventtitle">'+esc(label)+'</div><div class="eventmeta">Started '+esc(new Date().toLocaleString())+'</div></div><span class="status wait">RUNNING</span></div><div class="meterbar"><span></span></div><div class="eventmeta timerText">Elapsed 0.00 s</div><pre class="resultpre resultText">Waiting for endpoint response…</pre>';
+ $('actionResults').prepend(row);const started=performance.now();const bar=row.querySelector('.meterbar span');const timer=row.querySelector('.timerText');const badge=row.querySelector('.status');const result=row.querySelector('.resultText');
+ const interval=setInterval(()=>{timer.textContent='Elapsed '+fmtElapsed(performance.now()-started);bar.style.width=Math.min(96,12+(performance.now()-started)/15000*84)+'%'},80);
+ return {finish:(state,data)=>{clearInterval(interval);timer.textContent='Finished in '+fmtElapsed(performance.now()-started)+' · '+new Date().toLocaleTimeString();bar.style.width='100%';badge.textContent=state.toUpperCase();badge.className='status '+(state==='completed'?'good':state==='queued'?'wait':'bad');result.textContent=typeof data==='string'?data:JSON.stringify(data,null,2)}};
+}
+async function runTask(label,fn){
+ const run=addRun(label);try{const data=await fn();const state=data?.action==='queued'?'queued':data?.ok===false?'failed':'completed';run.finish(state,data);return data}
+ catch(error){run.finish('failed',{error:error?.message||String(error)});return null}
+}
+function eventCard(title,status,meta,detail){
+ const row=document.createElement('article');row.className='event';const s=String(status||'unknown').toLowerCase();
+ const cls=['delivered','verified','completed','passed','received','sent','ok','reachable'].includes(s)?'good':['failed','bounced','complained','unavailable','degraded','paused'].includes(s)?'bad':['pending','queued','running','waiting','accepted','processing'].includes(s)?'wait':'info';
+ row.innerHTML='<div class="eventtop"><div><div class="eventtitle">'+esc(title)+'</div><div class="eventmeta">'+esc(meta||'')+'</div>'+(detail?'<div class="eventmeta">'+esc(detail)+'</div>':'')+'</div><span class="status '+cls+'">'+esc(status||'unknown')+'</span></div>';return row;
+}
+function fillList(id,rows,mapper,emptyText){
+ const el=$(id);if(!el)return;el.replaceChildren();if(!rows||!rows.length){const empty=document.createElement('div');empty.className='empty';empty.textContent=emptyText;el.appendChild(empty);return}rows.forEach(item=>el.appendChild(mapper(item)));
+}
+function renderStatus(response){
+ const d=response?.data||{},emails=d.email_events||[],sms=d.sms_events||[],inbound=d.inbound_emails||[],intakes=d.latest_intakes||[],tests=d.latest_tests||[],controls=d.system_controls||[];
+ const latestEmail=emails[0],latestSms=sms[0],latestInbound=inbound[0],paused=controls.some(x=>x.paused===true);
+ $('mHealth').textContent=response?.ok?'LIVE':'UNKNOWN';$('mHealthNote').textContent='Owner API response · '+fmtDate(response.generated_at);
+ $('mEmail').textContent=latestEmail?String(latestEmail.status||latestEmail.event_type||'RECORDED').toUpperCase():'NO EVENTS';$('mEmailNote').textContent=latestEmail?String(latestEmail.event_type||'')+' · '+fmtDate(latestEmail.created_at):'No email event rows returned';
+ $('mSms').textContent=latestSms?String(latestSms.callback_status||latestSms.status||'RECORDED').toUpperCase():'NO EVENTS';$('mSmsNote').textContent=latestSms?String(latestSms.provider||'provider')+' · '+String(latestSms.role||'outbound'):'No SMS row returned';
+ $('mInbound').textContent=latestInbound?String(latestInbound.status||'RECORDED').toUpperCase():'NO EVENTS';$('mInboundNote').textContent=latestInbound?fmtDate(latestInbound.received_at):'No inbound email record returned';
+ $('mTests').textContent=String(d.test_run_count??tests.length);$('mTestsNote').textContent=tests.length+' latest records returned · '+(paused?'system PAUSED':'pause flag not set');$('updatedAt').textContent='Last refresh: '+new Date().toLocaleString();
+ fillList('emailList',emails,e=>eventCard(e.event_type||'Resend event',e.status||'unknown',fmtDate(e.created_at),'Provider message ref: '+(e.provider_message_id||'—')),'No email events recorded.');
+ fillList('smsList',sms,e=>eventCard('SMS · '+(e.role||'outbound'),e.callback_status||e.status||'unknown',fmtDate(e.created_at),'Provider: '+(e.provider||'unknown')+' · Reference: '+(e.provider_ref||'—')+(e.provider_error?' · Error: '+e.provider_error:'')),'No SMS messages recorded.');
+ fillList('inboundList',inbound,e=>eventCard('Inbound email',e.status||'unknown',fmtDate(e.received_at),e.processing_error?'Processing error: '+e.processing_error:'Inbound record available; message body hidden.'),'No inbound email recorded.');
+ fillList('intakeList',intakes,e=>eventCard('Form intake · '+(e.selected_priority||'priority unspecified'),e.status||'received',fmtDate(e.created_at),'Reference: '+(e.id||'—')+' · Language: '+(e.language||'unknown')),'No form submissions returned.');
+ fillList('testList',tests,e=>eventCard(e.test_name||'Test run',e.status||'unknown',(e.system_name||'')+' · '+fmtDate(e.created_at),e.actual||e.notes||''),'No test runs recorded.');
+ fillList('approvalList',d.recent_approvals||[],e=>eventCard('Approval '+(e.approval_id||''),e.status||'unknown',fmtDate(e.created_at),'Read-only approval snapshot'),'No approval records returned.');
+}
+async function refreshStatus(){return await runTask('Refresh live intake, email, SMS, inbound, approvals and test state',async()=>{const result=await callOwner('system status');if(result.action==='system_status')renderStatus(result);return result})}
+async function checkDomain(){return await runTask('Read current Resend domain and DNS verification',async()=>{
+ const r=await callOwner('domain status');const d=r.detail||{};const cap=d.capabilities||{};const records=d.records||[];
+ if(r.action==='domain_status'){$('mEmail').textContent=String(d.status||'UNKNOWN').toUpperCase();$('mEmailNote').textContent='Sending: '+String(cap.sending||'unknown')+' · Receiving: '+String(cap.receiving||'unknown');
+  fillList('emailList',records,e=>eventCard((e.record||'DNS')+' · '+(e.name||''),e.status||'unknown','DNS record value hidden',e.value_present?'Record value reported present':'Value not exposed'),'No DNS record statuses returned.');
+ }
+ return r;
+})}
+async function sendTestEmail(){return await runTask('Send one explicit owner-only test email via Resend',async()=>{
+ const r=await callOwner('send test email');if(r.action==='email_test'&&r.ok){const id=r.detail?.response?.id||'provider accepted';$('mEmail').textContent='TEST SENT';$('mEmailNote').textContent='Resend accepted owner test · '+id}return r;
+})}
+async function submitCommand(event){
+ event?.preventDefault();const value=$('commandInput').value.trim();if(!value){$('commandInput').focus();return}$('commandInput').value='';
+ await runTask('PALCYAI command: '+value,async()=>{
+   const r=await callOwner(value);
+   if(r.action==='system_status')renderStatus(r);
+   if(r.action==='domain_status'){$('mEmail').textContent=String(r.detail?.status||'UNKNOWN').toUpperCase();$('mEmailNote').textContent='Sending: '+String(r.detail?.capabilities?.sending||'unknown')+' · Receiving: '+String(r.detail?.capabilities?.receiving||'unknown')}
+   return r;
+ });
+}
+function openLink(url,label){
+ const opened=window.open(url,'_blank','noopener,noreferrer');
+ void runTask('Open '+label,async()=>{if(!opened)throw new Error('The browser blocked the new tab. Allow pop-ups for this site and retry.');return{ok:true,action:'open_link',label:label,destination:url,note:'The link opened in another tab; this is navigation, not proof of provider execution.'}});
+}
+$('loginBtn').addEventListener('click',async()=>{
+ const email=$('loginEmail').value.trim().toLowerCase();if(email!==OWNER_EMAIL){$('loginMessage').textContent='Owner-only access. Use the configured owner email.';return}
+ const start=performance.now();$('loginBtn').disabled=true;$('loginMessage').textContent='Requesting secure magic link…';$('loginTimer').textContent='Elapsed 0.00 s';const timer=setInterval(()=>$('loginTimer').textContent='Elapsed '+fmtElapsed(performance.now()-start),80);
+ try{const {error}=await sb.auth.signInWithOtp({email:email,options:{emailRedirectTo:location.origin+location.pathname}});$('loginMessage').textContent=error?'Could not request link: '+error.message:'Sign-in link requested. Open it in the owner mailbox, then return to this page.'}
+ catch(e){$('loginMessage').textContent='Login request failed: '+(e?.message||String(e))}
+ finally{clearInterval(timer);$('loginTimer').textContent='Finished in '+fmtElapsed(performance.now()-start);$('loginBtn').disabled=false}
+});
+$('signOutBtn').addEventListener('click',()=>runTask('Sign out owner session',async()=>{const {error}=await sb.auth.signOut();if(error)throw error;return{ok:true,action:'signed_out'}}));
+$('refreshBtn').addEventListener('click',refreshStatus);$('statusBtn').addEventListener('click',refreshStatus);
+$('healthBtn').addEventListener('click',()=>runTask('Authenticated Supabase auth + database health check',async()=>{const r=await callHealth();$('mHealth').textContent=String(r.status||'unknown').toUpperCase();$('mHealthNote').textContent='Authentication: '+String(r.auth||'unknown')+' · Database: '+String(r.database||'unknown');return r}));
+$('domainBtn').addEventListener('click',checkDomain);$('smsBtn').addEventListener('click',async()=>{await refreshStatus();document.querySelector('[data-pane="smsPane"]').click()});$('inboundBtn').addEventListener('click',async()=>{await refreshStatus();document.querySelector('[data-pane="inboundPane"]').click()});
+$('commandForm').addEventListener('submit',submitCommand);
+document.querySelectorAll('[data-command]').forEach(b=>b.addEventListener('click',async()=>{const v=b.dataset.command;if(v==='send test email')await sendTestEmail();else if(v==='domain status')await checkDomain();else await refreshStatus()}));
+document.querySelectorAll('[data-open-url]').forEach(b=>b.addEventListener('click',()=>openLink(b.dataset.openUrl,b.textContent.replace('↗','').trim())));
+document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x===b));document.querySelectorAll('.pane').forEach(x=>x.classList.toggle('active',x.id===b.dataset.pane))}));
+sb.auth.onAuthStateChange((_event,session)=>{setSession(session);if(session&&String(session.user?.email||'').toLowerCase()===OWNER_EMAIL){refreshStatus();checkDomain()}});
+const {data:{session}}=await sb.auth.getSession();setSession(session);if(session&&String(session.user?.email||'').toLowerCase()===OWNER_EMAIL){await refreshStatus();await checkDomain()}
+</script>
+</body>
+</html>
