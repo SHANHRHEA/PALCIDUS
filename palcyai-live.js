@@ -13,6 +13,9 @@
   $('replayLaunch').onclick=()=>{$('launchVideo').currentTime=0;$('launchVideo').play().catch(()=>{$('videoStatus').textContent='Press Play to start the video.';});};
   $('launchVideo').onerror=()=>{$('videoStatus').textContent='Video could not load. Check that the upload completed.';};
   const friendly={actions:'Saved work',leads:'Prospects',email:'Email delivery',sms:'SMS delivery',tools:'Connections',tests:'Recorded checks',agents:'Agent definitions',skills:'Skill definitions',campaigns:'Campaign records',funnels:'Funnel records',followups:'Follow-up records',approvals:'Approval records',voice:'Voice records',economics:'Usage and costs',briefs:'Recorded briefs',deployments:'Deployment evidence'};
+  maps.meetingnotes='meetingnotes';friendly.meetingnotes='Meeting notes';
+  const meetingNav=document.createElement('button');meetingNav.dataset.view='meetingnotes';meetingNav.textContent='▤ Meeting Notes';document.querySelector('#nav').appendChild(meetingNav);
+  const meetingView=document.createElement('section');meetingView.id='meetingnotes';meetingView.className='view';meetingView.innerHTML='<div class="card"><h2>Meeting notes and learning</h2><p>Recorded meetings can become private summaries, action items and source-linked knowledge drafts.</p><p>Fathom account access is verified. Auto-record settings have not yet been verified. The setup check found only the Fathom Demo, which is excluded from your knowledge.</p><div class="toolbar"><a class="btn" href="https://fathom.video/customize" target="_blank" rel="noopener">Open recording settings ↗</a><a class="btn" href="https://fathom.video/" target="_blank" rel="noopener">Open Fathom recordings ↗</a></div><p>Summary emails go only to you. Vapi knowledge changes require a separate reviewed update.</p></div>';document.querySelector('.main').appendChild(meetingView);
   async function api(payload){
     if(!owner)throw Error('Sign in with the owner account first.');
     const {data,error}=await sb.auth.getSession();if(error||!data.session)throw Error('Sign in again.');
@@ -28,6 +31,7 @@
       const id=r.action_id||r.id||r.campaign_id||r.funnel_id||r.agent_id||r.skill_id||'';
       const status=r.status||r.result_status||'recorded';
       let contact='';
+      if(key==='meetingnotes')contact=`<p>${safe(r.summary_markdown||'Summary pending')}</p><p>Transcript: ${safe(r.transcript_status)} · Email: ${safe(r.email_status)} · Knowledge: ${safe(r.knowledge_status)}</p>${/^https:\/\/fathom\.video\//.test(r.source_url||'')?`<a class="btn" href="${safe(r.source_url)}" target="_blank" rel="noopener">Open original recording ↗</a>`:''}`;
       if(key==='leads'){
         const phone=/^\+[1-9]\d{7,14}$/.test(r.phone||'')?`<a class="btn" href="tel:${safe(r.phone)}">Call ${safe(r.phone)}</a>`:'';
         const email=r.email?`<a class="btn" href="mailto:${encodeURIComponent(r.email)}">Email ${safe(r.email)}</a>`:'';
@@ -66,7 +70,7 @@
   for(const view of document.querySelectorAll('.view')){
     if(['command','launchvideo'].includes(view.id))continue;
     const bar=document.createElement('div');bar.className='notice';bar.style.marginBottom='16px';
-    const backed=['leads','campaigns','funnels','email','sms','voice','sales','approvals','evaluations'].includes(view.id);
+    const backed=['leads','campaigns','funnels','email','sms','voice','sales','approvals','evaluations','meetingnotes'].includes(view.id);
     bar.innerHTML=`<button class="btn" data-live-view="${view.id}">${backed?'View records for this module':'View requests for this role'}</button> <span class="small">${view.id==='campaigns'?'Campaign draft builder is connected. Publishing is separate.':backed?'Saved database records; individual capabilities need their own execution evidence.':'Blueprint capabilities below. This role has no connected executor yet; requests will not be shown as completed work.'}</span>`;view.prepend(bar);
     bar.querySelector('button').onclick=()=>openModule(view.querySelector('h2')?.textContent||view.id,view.id);
   }
