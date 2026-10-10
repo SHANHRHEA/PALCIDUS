@@ -268,11 +268,37 @@ document.addEventListener('click',e=>{const b=e.target.closest('button[data-view
 const mobileMenuToggle=document.getElementById('mobileMenuToggle');
 mobileMenuToggle?.addEventListener('click',()=>{
   const side=document.querySelector('.side');
+  if(!side)return;
   const opened=side.classList.toggle('menu-open');
   mobileMenuToggle.setAttribute('aria-expanded',String(opened));
   mobileMenuToggle.setAttribute('aria-label',opened?'Close dashboard menu':'Open dashboard menu');
   mobileMenuToggle.textContent=opened?'✕ Close Menu':'☰ Menu';
 });
+
+/* Mobile tap reliability bridge.
+   Some embedded/SMS-launched mobile browsers fail to synthesize click consistently.
+   Only a short, stationary, single-finger tap on a button is bridged. Moving a finger
+   to scroll will never activate a button. Normal desktop clicks and real links are unchanged. */
+let palcyTouchStart=null;
+document.addEventListener('touchstart',e=>{
+  const btn=e.target instanceof Element?e.target.closest('button'):null;
+  if(!btn||btn.disabled||!e.touches||e.touches.length!==1){palcyTouchStart=null;return;}
+  const t=e.touches[0];
+  palcyTouchStart={btn,x:t.clientX,y:t.clientY,at:Date.now()};
+},{capture:true,passive:true});
+document.addEventListener('touchend',e=>{
+  const start=palcyTouchStart;palcyTouchStart=null;
+  if(!start||!start.btn.isConnected||start.btn.disabled||!e.changedTouches||!e.changedTouches.length)return;
+  const t=e.changedTouches[0];
+  if(Math.abs(t.clientX-start.x)>12||Math.abs(t.clientY-start.y)>12||Date.now()-start.at>1200)return;
+  if(!(e.target instanceof Node)||!start.btn.contains(e.target))return;
+  /* Cancel the browser's duplicate compatibility click and dispatch one standard click
+     that reaches the existing delegated handlers (nav, records, modal, approvals, etc.). */
+  e.preventDefault();
+  start.btn.click();
+},{capture:true,passive:false});
+document.addEventListener('touchcancel',()=>{palcyTouchStart=null;},{capture:true,passive:true});
+
 window.addEventListener('hashchange',()=>{
   const view=decodeURIComponent(location.hash.slice(1));
   if(document.getElementById(view)?.classList.contains('view'))showView(view,false);
