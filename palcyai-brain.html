@@ -257,7 +257,7 @@ function showView(view,updateHash=true){
   document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active',v.id===view));
   document.querySelectorAll('.nav button[data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view===view));
   const b=[...document.querySelectorAll('.nav button[data-view]')].find(button=>button.dataset.view===view);
-  document.getElementById('crumb').textContent=b?b.textContent.replace(/[⌂◈▣🧠🤖👥🎯📣🧲✍🎥💼🌐✉🎤📱💬🗓↗⚡📊✓◫◒▤◌⌕🛠🧭⚙🧩🧪🔐🗄🛒☁]/g,'').replace(/\\s+/g,' ').trim():view;
+  document.getElementById('crumb').textContent=b?b.textContent.replace(/[⌂◈▣🧠🤖👥🎯📣🧲✍🎥💼🌐✉🎤📱💬🗓↗⚡📊✓◫◒▤◌⌕🛠🧭⚙🧩🧪🔐🗄🛒☁]/g,'').replace(/\s+/g,' ').trim():view;
   if(updateHash&&location.hash!=='#'+view)history.replaceState(null,'','#'+view);
   const side=document.querySelector('.side'),toggle=document.getElementById('mobileMenuToggle');
   if(side&&side.classList.contains('menu-open'))side.classList.remove('menu-open');
