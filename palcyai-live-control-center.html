@@ -123,7 +123,7 @@ function fillList(id,rows,mapper,emptyText){
  const el=$(id);if(!el)return;el.replaceChildren();if(!rows||!rows.length){const empty=document.createElement('div');empty.className='empty';empty.textContent=emptyText;el.appendChild(empty);return}rows.forEach(item=>el.appendChild(mapper(item)));
 }
 function renderStatus(response){
- const d=response?.data||{},emails=d.email_events||[],sms=d.sms_events||[],inbound=d.inbound_emails||[],intakes=d.latest_intakes||[],tests=d.latest_tests||[],controls=d.system_controls||[];
+ const d=response?.data||{},emails=d.email_events||[],sms=d.sms_events||[],inbound=d.inbound_emails||[],intakes=d.latest_intakes||[],tests=d.latest_tests||[],controls=d.system_controls||[],trustSafetyControls=d.trust_safety_controls||d.trustSafetyControls||[];
  const latestEmail=emails[0],latestSms=sms[0],latestInbound=inbound[0],paused=d.effective_pause_all===true||controls.some(x=>x.paused===true||x.enabled===false)||trustSafetyControls.some(x=>x.pause_all===true);
  $('mHealth').textContent=response?.ok?(d.query_warnings?.length?'DEGRADED':'LIVE'):'UNKNOWN';$('mHealthNote').textContent=(d.query_warnings?.length?'Partial source queries: '+d.query_warnings.join(', ')+' · ':'Owner API response · ')+fmtDate(response.generated_at);
  $('mEmail').textContent=latestEmail?String(latestEmail.status||latestEmail.event_type||'RECORDED').toUpperCase():'NO EVENTS';$('mEmailNote').textContent=latestEmail?String(latestEmail.event_type||'')+' · '+fmtDate(latestEmail.created_at):'No email event rows returned';
