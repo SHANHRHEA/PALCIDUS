@@ -16,10 +16,10 @@
   maps.meetingnotes='meetingnotes';friendly.meetingnotes='Meeting notes';
   const meetingNav=document.createElement('button');meetingNav.dataset.view='meetingnotes';meetingNav.textContent='▤ Meeting Notes';document.querySelector('#nav').appendChild(meetingNav);
   const meetingView=document.createElement('section');meetingView.id='meetingnotes';meetingView.className='view';meetingView.innerHTML='<div class="card"><h2>Meeting notes and learning</h2><p>Recorded meetings can become private summaries, action items and source-linked knowledge drafts.</p><p>Fathom account access is verified. Auto-record settings have not yet been verified. The setup check found only the Fathom Demo, which is excluded from your knowledge.</p><div class="toolbar"><a class="btn" href="https://fathom.video/customize" target="_blank" rel="noopener">Open recording settings ↗</a><a class="btn" href="https://fathom.video/" target="_blank" rel="noopener">Open Fathom recordings ↗</a></div><p>Summary emails go only to you. Vapi knowledge changes require a separate reviewed update.</p></div>';document.querySelector('.main').appendChild(meetingView);
-  async function api(payload){
+  async function api(payload,route='palcy-chief-command'){
     if(!owner)throw Error('Sign in with the owner account first.');
     const {data,error}=await sb.auth.getSession();if(error||!data.session)throw Error('Sign in again.');
-    const response=await fetch(URL+'/functions/v1/palcy-chief-command',{method:'POST',headers:{'Content-Type':'application/json',apikey:KEY,Authorization:'Bearer '+data.session.access_token},body:JSON.stringify(payload)});
+    const response=await fetch(URL+'/functions/v1/'+route,{method:'POST',headers:{'Content-Type':'application/json',apikey:KEY,Authorization:'Bearer '+data.session.access_token},body:JSON.stringify(payload)});
     const result=await response.json();if(!response.ok)throw Error(result.error||'Request failed');return result;
   }
   function time(iso){return iso?new Date(iso).toLocaleString():'';}
@@ -98,6 +98,8 @@
   try{
     const {mountTaskBoard}=await import('./palcyai-tasks.js');
     taskBoard=mountTaskBoard({api,isOwner:()=>owner});
+    const {mountMessaging}=await import('./palcyai-messaging.js');
+    mountMessaging({api:payload=>api(payload,'palcy-messaging'),isOwner:()=>owner});
     const {createClient}=await import('https://esm.sh/@supabase/supabase-js@2.99.2');
     sb=createClient(URL,KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
     $('loginPassword').onclick=async()=>{try{const email=$('ownerEmail').value.trim().toLowerCase();if(email!=='patrickpalcidus@gmail.com')throw Error('Use the owner account.');const password=$('ownerPassword').value;const {error}=await sb.auth.signInWithPassword({email,password});$('ownerPassword').value='';if(error)throw error;}catch(e){$('liveStatus').textContent=e.message;}};
