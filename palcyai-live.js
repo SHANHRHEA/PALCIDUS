@@ -64,7 +64,7 @@
   // Every Open card now opens a real data drawer, replacing the original static toast.
   document.addEventListener('click',e=>{
     const nav=e.target.closest('button[data-view]');if(nav){$('commandInput').value='';$('commandResult').textContent='New role selected. Campaign builds execute; unsupported requests remain saved plans.';$('runOutput').textContent='';$('runProgress').textContent='';$('liveModuleBody').textContent='';if(modal.open)modal.close();}
-    const b=e.target.closest('[data-open-item]');if(b){e.preventDefault();e.stopImmediatePropagation();openModule(b.dataset.openItem,b.closest('.view')?.id);}
+    const b=e.target.closest('[data-open-item]');if(b){e.preventDefault();e.stopImmediatePropagation();const view=b.closest('.view')?.id;if(view==='campaigns'&&taskBoard){taskBoard.openWorkspace(b.dataset.openItem);return;}openModule(b.dataset.openItem,view);}
     const lead=e.target.closest('[data-brief-id]');if(lead){modal.close();run('priority_brief',{lead_id:lead.dataset.briefId});}
   },true);
   for(const view of document.querySelectorAll('.view')){
