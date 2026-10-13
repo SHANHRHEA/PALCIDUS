@@ -36,3 +36,8 @@
   Cache-Control: no-store
   X-Robots-Tag: noindex, nofollow, noarchive
   Content-Security-Policy: default-src 'self'; script-src 'none'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'
+
+/affiliate-hub.html
+  Cache-Control: no-store
+  X-Robots-Tag: noindex, nofollow, noarchive
+  Content-Security-Policy: frame-ancestors 'none'; base-uri 'self'; object-src 'none'
