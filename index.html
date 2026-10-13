@@ -742,7 +742,15 @@ async function submitLead(e) {
 
     const priority = state.priority || 'general';
     const language = (currentLanguage().code || 'en').slice(0,2);
-    const idempotencyKey = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : ('palcy-' + Date.now() + '-' + Math.random().toString(36).slice(2));
+    // Keep the same request key for repeat clicks/retries from this browser and email on the same UTC day.
+    // The server remains the source of truth; this is only a client-side retry safeguard.
+    const idempotencyScope = 'palcyai-intake:' + email.trim().toLowerCase() + ':' + new Date().toISOString().slice(0,10);
+    let idempotencyKey = '';
+    try { idempotencyKey = sessionStorage.getItem(idempotencyScope) || ''; } catch (_) {}
+    if (!idempotencyKey) {
+        idempotencyKey = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : ('palcy-' + Date.now() + '-' + Math.random().toString(36).slice(2));
+        try { sessionStorage.setItem(idempotencyScope, idempotencyKey); } catch (_) {}
+    }
     state.lead = {
         firstName: name, email, phone, consent: true,
         smsConsent,
