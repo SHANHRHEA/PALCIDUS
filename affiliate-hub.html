@@ -21,7 +21,7 @@
 </main>
 <script>
 const SUPABASE_URL="https://yzeomkrvncewnrbvhuui.supabase.co";
-const SUPABASE_ANON_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl6ZW9ta3J2bmNld25yYnZodXVpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODkyNDEyMzMsImV4cCI6MjEwNDgxNzIzM30.ZV8kmPagdPjHX6asTpdguQorccV9ADLjsIGdm1wkrQs";
+const SUPABASE_ANON_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl6ZW9ta3J2bmNld25yYnZodXVpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODkyNDEyMzMsImV4cCI6MjEwNDgxNzIzM30.ZV8kmPagdPjHX6asTpdguQorccV9ADLjsIGdm1wkrQs";
 const API=SUPABASE_URL+"/functions/v1/palcy-affiliate-hub";
 const client=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
 const $=id=>document.getElementById(id);let products=[];
