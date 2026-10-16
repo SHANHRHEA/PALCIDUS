@@ -828,7 +828,7 @@ async function submitLead(e) {
  $('chatForm').onsubmit=e=>{e.preventDefault();chatDictation.stop();const v=$('chatInput').value.trim();if(!v)return;$('chatInput').value='';askPALCY(v)};
  $('keyboardToggle').onclick=()=>{$('nativeKeyboard').classList.toggle('open');renderKeyboard()};
  document.addEventListener('palcidus:language',()=>{renderKeyboard();const lang=currentLanguage();state.language=lang.name;const kb=$('nativeKeyboard');if(kb&&lang.code!=='en')kb.classList.add('open')});
- const q=new URLSearchParams(location.search);if(q.get('source')==='qr'||q.get('source')==='referral')showStep('priority');
+ const q=new URLSearchParams(location.search);if(q.get('source')==='qr'||q.get('source')==='referral')showStep('priority');if(q.get('voice')==='1')window.PALCYVoice?.openVoice();
 }
 document.addEventListener('DOMContentLoaded',init);
 

@@ -147,81 +147,74 @@
         <main>
             <section class="optin-container">
                 <div class="article-preview">
-                    <img src="wealth_blueprint_cover.png" alt="The 2026 Wealth Blueprint Cover"
+                    <img src="palcidus-patrick.png" alt="Palcidus Patrick"
                         style="width: 100%; border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.5); margin-bottom: 2rem; transform: perspective(1000px) rotateY(-5deg);">
                     <div class="tag ai">Complimentary Digital Access</div>
-                    <h2>The 2026 Wealth Blueprint</h2>
-                    <p>Strategic cross-border architecture for families and professionals in Canada and the United
-                        States.</p>
+                    <h2>Core Financial Concepts Guide</h2>
+                    <p>A free educational starting point for organizing your financial priorities and preparing questions for an advisor conversation.</p>
 
                     <div style="margin-top: 2rem;">
                         <div class="benefit-item">
                             <span class="benefit-icon">✦</span>
-                            <span><strong>Institutional Access:</strong> Leverage solutions from 100+ global
-                                carriers.</span>
+                            <span><strong>Start with your priorities:</strong> Organize the questions you want to discuss.</span>
                         </div>
                         <div class="benefit-item">
                             <span class="benefit-icon">✦</span>
-                            <span><strong>Tax Efficiency:</strong> Optimization for RRSP, TFSA, 401k, and IRA
-                                accounts.</span>
+                            <span><strong>Education first:</strong> Learn general financial concepts before a personal review.</span>
                         </div>
                         <div class="benefit-item">
                             <span class="benefit-icon">✦</span>
-                            <span><strong>Legacy Protection:</strong> Advanced probate and estate transfer
-                                strategies.</span>
+                            <span><strong>Prepare for a conversation:</strong> Note the goals and questions you want an advisor to review.</span>
                         </div>
                     </div>
                 </div>
 
                 <div class="glass-card form-card">
                     <div style="text-align: center; margin-bottom: 2rem;">
-                        <h3 style="margin-bottom: 0.5rem;">Secure Access</h3>
-                        <p style="font-size: 0.85rem;">Enter your details to receive the blueprint.</p>
+                        <h3 style="margin-bottom: 0.5rem;">Request your guide</h3>
+                        <p style="font-size: 0.85rem;">Your details are sent to the secure PALCYAI intake after you consent.</p>
                     </div>
                     <form id="leadForm">
                         <div class="form-group">
-                            <label>Full Name</label>
+                            <label for="name">First name</label>
                             <input type="text" id="name" placeholder="Enter your name" required>
                         </div>
                         <div class="form-group">
-                            <label>Professional Email</label>
+                            <label for="email">Email</label>
                             <input type="email" id="email" placeholder="email@address.com" required>
                         </div>
                         <div class="form-group">
-                            <label>Residing Jurisdiction</label>
-                            <select id="country" required>
-                                <option value="">Select Region</option>
-                                <option value="Canada">Canada</option>
-                                <option value="USA">United States</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Primary Financial Goal</label>
+                            <label for="interest">What would you like to understand first?</label>
                             <select id="interest" required>
-                                <option value="Life Insurance">Tax-Free Wealth Protection</option>
-                                <option value="Retirement">Income Consistency in Retirement</option>
-                                <option value="Debt Management">Accelerated Debt Elimination</option>
-                                <option value="Education">Educational Legacy / Grants</option>
+                                <option value="" selected disabled>Select a topic</option>
+                                <option value="protection">Family protection</option>
+                                <option value="retirement">Retirement preparation</option>
+                                <option value="debt">Debt reduction</option>
+                                <option value="general">General financial education</option>
                             </select>
                         </div>
-                        <button type="submit" class="submit-btn" id="submitBtn">Send My Blueprint</button>
-                        <div id="statusMsg"></div>
+                        <div class="form-group consent-row">
+                            <label><input type="checkbox" id="leadConsent" required> I consent to PALCYAI using these details to provide the educational guide I requested and follow up about this request. Personalized recommendations require appropriate human review. <a href="/privacy.html" target="_blank" rel="noopener">Privacy notice</a>.</label>
+                        </div>
+                        <button type="submit" class="submit-btn" id="submitBtn">Request My Free Guide</button>
+                        <div id="statusMsg" role="status" aria-live="polite"></div>
+                        <div id="guideActions" hidden>
+                            <a class="submit-btn guide-link" href="/core-financial-concepts-guide.html">Open the educational guide</a>
+                            <a class="booking-link" href="https://cal.com/palcidus-patrick-3pee3f/30min" target="_blank" rel="noopener">Book a private review</a>
+                        </div>
                     </form>
                 </div>
             </section>
 
             <section id="ai-voice-sector"
                 style="margin-top: 8rem; padding: 4rem 2rem; background: rgba(99, 102, 241, 0.05); border-radius: 30px; border: 1px solid var(--glass-border); text-align: center;">
-                <div class="tag ai">Voice Intelligence Live</div>
-                <h2 style="margin-bottom: 1rem;">Talk to Alex Morgan</h2>
-                <p style="margin-bottom: 3rem; color: var(--text-secondary);">Your AI Financial Concierge is ready to
-                    assist with your portfolio architecture.</p>
-                <button onclick="startVapi()"
+                <div class="tag ai">PALCYAI Voice</div>
+                <h2 style="margin-bottom: 1rem;">Talk to PALCY AI</h2>
+                <p style="margin-bottom: 3rem; color: var(--text-secondary);">Open the current PALCY voice experience, where you can choose your preferred language and start a conversation.</p>
+                <a href="/?voice=1#voiceModal"
                     style="background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary)); border: none; padding: 20px 40px; border-radius: 12px; color: white; font-size: 1.2rem; font-weight: 800; cursor: pointer; transition: transform 0.3s; box-shadow: 0 10px 30px rgba(99, 102, 241, 0.4);">
-                    🎙️ CLICK TO START VOICE SESSION
-                </button>
-                <div id="vapi-status" style="margin-top: 1rem; font-size: 0.8rem; color: var(--accent-primary);">AI
-                    Engine: Standby</div>
+                    🎙️ Open PALCY Voice
+                </a>
             </section>
 <section id="palcyai-launch-video" style="margin-top:6rem;padding:4rem 2rem;border-radius:30px;background:rgba(99,102,241,.05);border:1px solid var(--glass-border);text-align:center;">
   <div class="tag ai">PALCYAI Launch Video</div>
@@ -237,127 +230,12 @@
         </main>
 
         <footer class="compliance-footer">
-            <p><strong>Disclaimer:</strong> Palcidus Patrick is an independent financial advisor and insurance broker.
-                Financial results depend on individual circumstances. Information provided is for educational purposes
-                only and does not constitute a binding contract. We respect your privacy according to PIPEDA (Canada)
-                and US Privacy Laws.</p>
+            <p><strong>Education only:</strong> This guide provides general educational information. It is not an individualized recommendation or a guarantee of eligibility, coverage, product availability, tax outcome, or investment return. Personalized financial and insurance decisions require appropriate human review and current verified information.</p>
             <p style="margin-top: 1rem;">© 2026 | Powered by Independent Financial Architecture</p>
         </footer>
     </div>
 
-    <script>
-        document.getElementById('leadForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const btn = document.getElementById('submitBtn');
-            const status = document.getElementById('statusMsg');
-
-            const formData = {
-                timestamp: new Date().toISOString(),
-                name: document.getElementById('name').value,
-                email: document.getElementById('email').value,
-                country: document.getElementById('country').value,
-                interest: document.getElementById('interest').value
-            };
-
-            btn.disabled = true;
-            btn.textContent = 'Securing Data...';
-            status.textContent = 'Connecting to Secure Server...';
-
-            try {
-                // IMPORTANT: Replace this with your Google Apps Script Web App URL
-                // const SCRIPT_URL = 'YOUR_GOOGLE_SCRIPT_WEB_APP_URL';
-
-                // For demonstration, we simulate success
-                setTimeout(() => {
-                    status.style.color = 'var(--accent-primary)';
-                    status.textContent = 'Success! Redirecting to your blueprint...';
-                    btn.textContent = 'Identity Verified';
-
-                    console.log('Lead Captured:', formData);
-
-                    // Redirect to the Thank You page
-                    setTimeout(() => {
-                        window.location.href = 'Palcidus_Patrick_ThankYou.html';
-                    }, 1000);
-                }, 1500);
-
-            } catch (err) {
-                status.style.color = '#ef4444';
-                status.textContent = 'Connection Error. Please try again.';
-                btn.disabled = false;
-                btn.textContent = 'Get My Blueprint';
-            }
-        });
-    </script>
-
-    <!-- Vapi AI Voice Assistant (Alex Morgan) Integration -->
-    <div id="vapi-fallback-button" style="position: fixed; bottom: 30px; right: 30px; z-index: 9999; display: none;">
-        <button onclick="startVapi()"
-            style="background: linear-gradient(135deg, #6366f1, #f472b6); border: none; padding: 15px 25px; border-radius: 50px; color: white; font-weight: 800; cursor: pointer; box-shadow: 0 10px 20px rgba(0,0,0,0.3); font-family: 'Outfit', sans-serif;">
-            🎙️ Talk to Alex Morgan
-        </button>
-    </div>
-
-    <script>
-        var vapiInstance = null;
-
-        function startVapi() {
-            if (typeof vapiSDK !== 'undefined') {
-                vapiSDK.run({
-                    apiKey: "6b25be42-99d9-498b-8e96-74924b03924f",
-                    assistant: "ad824ba4-1667-4b0d-bd99-960c66b67731",
-                    config: {
-                        title: "Alex Morgan",
-                        subtitle: "Advisor Assistant",
-                        color: "#6366f1",
-                        placement: "bottom-right",
-                        showVoiceWave: true,
-                    }
-                });
-                console.log("Vapi Started Manually.");
-            } else {
-                alert("AI Engine is still loading. Please wait 5 seconds and try again.");
-            }
-        }
-
-        (function (d, t) {
-            console.log("Initializing Vapi Engine...");
-            var g = d.createElement(t),
-                s = d.getElementsByTagName(t)[0];
-            g.src = "https://cdn.jsdelivr.net/gh/VapiAI/html-script-tag@latest/dist/assets/index.js";
-            g.defer = true;
-            g.async = true;
-            s.parentNode.insertBefore(g, s);
-
-            g.onload = function () {
-                console.log("Vapi SDK Loaded Successfully.");
-                // Show fallback button if widget doesn't auto-appear in 3 seconds
-                setTimeout(() => {
-                    const widget = document.querySelector('.vapi-btn'); // Standard vapi class
-                    if (!widget) {
-                        document.getElementById('vapi-fallback-button').style.display = 'block';
-                        console.log("Showing Manual Fallback Button.");
-                    }
-                }, 3000);
-
-                try {
-                    vapiSDK.run({
-                        apiKey: "6b25be42-99d9-498b-8e96-74924b03924f",
-                        assistant: "ad824ba4-1667-4b0d-bd99-960c66b67731",
-                        config: {
-                            title: "Alex Morgan",
-                            subtitle: "Advisor Assistant",
-                            color: "#6366f1",
-                            placement: "bottom-right",
-                            showVoiceWave: true,
-                        }
-                    });
-                } catch (e) {
-                    console.error("Auto-run failed, manual trigger ready.", e);
-                }
-            };
-        })(document, "script");
-    </script>
+    <script type="module" src="/palcyai-legacy-landing.mjs"></script>
 </body>
 
 </html>
