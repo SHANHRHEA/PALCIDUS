@@ -348,9 +348,11 @@ const PRIORITIES=[
  ['protection','Protect my family','Understand responsibilities, existing coverage and protection questions.','Protection planning starts with responsibilities: who depends on income, what obligations would continue, and what resources already exist.'],
  ['cashflow','Improve cash flow','See how income, expenses and financial flexibility connect.','Cash flow is the foundation that affects flexibility for debt reduction, emergency savings and future goals.'],
  ['debt','Reduce debt','Organize debt pressure, payments and cash-flow priorities.','Debt planning becomes clearer when balances, rates, payments and cash-flow pressure are viewed together.'],
- ['retirement','Prepare for retirement','Explore time horizon, savings and retirement-income questions.','Retirement readiness is influenced by time, desired lifestyle, pension sources, savings habits and personal investments.'],
+ ['retirement','Prepare for retirement','Explore time horizon, registered savings, pension and retirement-income questions.','Retirement discovery can include RRSP, TFSA, pension and public-benefit education. Confirm current rules with official sources; an advisor reviews personal options.'],
  ['firsthome','Buy my first home','Organize savings, timing, affordability and first-home questions.','First-home readiness involves more than a down payment: timing, emergency reserves, debt, closing costs and affordability all matter.'],
  ['savings','Build savings','Understand time, compounding, risk and account questions.','Time can be powerful in long-term saving, while risk, fees, taxes and suitability still require careful review.'],
+ ['education','Plan for education','Explore education timelines, RESP basics and questions to verify.','Education planning can start with the goal and timeline. RESP rules and any government-program eligibility must be checked against current official sources.'],
+ ['business','Plan for my business','Explore continuity and owner-protection questions.','Business discovery can organize continuity, key-person and owner-planning questions for a licensed advisor review; no product fit is established here.'],
  ['emergency','Emergency readiness','Explore liquidity and unexpected-expense preparedness.','Emergency liquidity can help protect longer-term plans when income changes or unexpected costs appear.'],
  ['complete','See the full picture','Connect the major areas of your financial life.','A complete discovery can connect cash flow, debt, protection, emergency savings, home goals, retirement and financial organization.']
 ];
@@ -400,6 +402,18 @@ const QUESTION_BANK={
   {id:'retire_sources',q:'Which retirement resources do you already have?',opts:['Workplace pension','RRSP / group RRSP','TFSA / investments','Business / rental assets','Several of these','Very little / not sure']},
   {id:'retire_contrib',q:'How consistently are you saving toward retirement now?',opts:['Monthly / automatic','Most months','Occasionally','Not currently']},
   {id:'retire_income',q:'Have you estimated the monthly income you may want in retirement?',opts:['Yes, with a target','Rough estimate only','No','Not sure how to estimate it']}
+ ],
+ education:[
+  {id:'education_goal',q:'What education goal are you preparing for?',opts:['Child or family member’s future education','My own further education','General education savings','Still exploring']},
+  {id:'education_timing',q:'When might the education funds be needed?',opts:['Within 5 years','6–10 years','11+ years','Not sure']},
+  {id:'education_savings',q:'Have you started setting money aside for this goal?',opts:['Yes, regularly','Yes, sometimes','Not yet','Not sure']},
+  {id:'education_resp',q:'Would you like an advisor to explain RESP basics and which current government-program rules to verify?',opts:['Yes','Maybe later','No']}
+ ],
+ business:[
+  {id:'business_stage',q:'Which business-owner planning area would you like to discuss?',opts:['Keeping operations running','Key-person continuity','Owner or partner transition','Protecting household income','Still exploring']},
+  {id:'business_horizon',q:'When would you like to review this?',opts:['Soon','Within 6 months','Later this year','Just learning']},
+  {id:'business_existing',q:'Have you already documented a continuity or succession plan?',opts:['Yes','Partly','No','Not sure']},
+  {id:'business_review',q:'Would you like a licensed advisor to review the business context and current approved options?',opts:['Yes','Maybe later','No']}
  ],
  firsthome:[
   {id:'home',q:'When would you ideally like to buy your first home?',opts:['Within 12 months','1–2 years','3–5 years','Later / exploring']},
@@ -528,9 +542,9 @@ function renderQuestion(){
  $('qBack').onclick=()=>{state.qIndex=Math.max(0,state.qIndex-1);renderQuestion()};
  $('qNext').onclick=()=>{if(!state.answers[q.id])return;state.qIndex++;renderQuestion()};
 }
-function priorityLabel(id){return ({cashflow:'Cash Flow',emergency:'Emergency Readiness',debt:'Debt',protection:'Family Protection',retirement:'Retirement Direction',firsthome:'First Home',savings:'Savings & Investments',organization:'Financial Organization'})[id]||id}
+function priorityLabel(id){return ({cashflow:'Cash Flow',emergency:'Emergency Readiness',debt:'Debt',protection:'Family Protection',retirement:'Retirement Direction',firsthome:'First Home',savings:'Savings & Investments',education:'Education Savings',business:'Business Continuity',organization:'Financial Organization'})[id]||id}
 function selectedPriorityIds(){
- const scoreable=new Set(['cashflow','emergency','debt','protection','retirement','firsthome','savings','organization']);
+ const scoreable=new Set(['cashflow','emergency','debt','protection','retirement','firsthome','savings','education','business','organization']);
  const ids=[];
  if(state.priority&&state.priority!=='complete'&&scoreable.has(state.priority))ids.push(state.priority);
  [...state.topics].forEach(id=>{if(scoreable.has(id)&&!ids.includes(id))ids.push(id)});
@@ -538,7 +552,7 @@ function selectedPriorityIds(){
  return ids;
 }
 function rankPriorities(){
- const a=state.answers,scores={cashflow:20,emergency:20,debt:20,protection:20,retirement:20,firsthome:state.priority==='firsthome'?45:10,savings:20,organization:20};
+ const a=state.answers,scores={cashflow:20,emergency:20,debt:20,protection:20,retirement:20,firsthome:state.priority==='firsthome'?45:10,savings:20,education:state.priority==='education'?45:10,business:state.priority==='business'?45:10,organization:20};
  const bump=(k,n)=>scores[k]=Math.min(100,(scores[k]||0)+n);
  if(a.cashflow==='Often short')bump('cashflow',75);else if(a.cashflow==='About break-even')bump('cashflow',50);else if(a.cashflow==='Small surplus')bump('cashflow',25);
  if(['Less than 1 month','Not sure'].includes(a.emergency))bump('emergency',75);else if(a.emergency==='1–2 months')bump('emergency',50);else if(a.emergency==='3–5 months')bump('emergency',20);
@@ -551,6 +565,10 @@ function rankPriorities(){
  if(a.preapproval==='Not yet')bump('firsthome',20);
  if(a.closing_reserve==='Not yet'||a.closing_reserve==='Not sure how much')bump('firsthome',20);
  if(a.savings_regular==='Not currently')bump('savings',45);else if(a.savings_regular==='Occasionally')bump('savings',25);
+ if(a.education_goal&&a.education_goal!=='Still exploring')bump('education',15);
+ if(a.education_timing==='Within 5 years')bump('education',25);else if(a.education_timing==='Not sure')bump('education',10);
+ if(a.business_stage&&a.business_stage!=='Still exploring')bump('business',20);
+ if(a.business_horizon==='Soon')bump('business',20);
  if(a.documents==='I need to organize them'||a.expense_visibility==='Not clearly')bump('organization',50);
  if(state.priority&&scores[state.priority]!=null)bump(state.priority,18);
  const selected=new Set(selectedPriorityIds());
@@ -566,6 +584,8 @@ function solutionFor(id,a){
   debt:'Create a debt inventory showing balance, interest rate, minimum payment and remaining term; then review accelerated repayment, refinancing or consolidation possibilities with appropriate professional guidance where relevant.',
   protection:'Complete a licensed protection-needs review covering dependants, income replacement, debts, final/estate costs, existing policies and workplace benefits before comparing suitable coverage structures.',
   retirement:'Define retirement timing and desired income, inventory pensions/RRSP/TFSA and other assets, estimate the funding gap, then establish an appropriate contribution and investment review with a licensed professional.',
+  education:'Clarify the education goal and time horizon, then review RESP basics and current government-program eligibility using official sources with a licensed advisor; this discovery does not determine eligibility or recommend a product.',
+  business:'Map the business continuity, key-person or ownership concern at a high level, then arrange a licensed advisor review of current approved options; no product fit or coverage amount is determined here.',
   firsthome:'Build a first-home readiness plan covering target price, down payment, FHSA/RRSP Home Buyers’ Plan education, debt, mortgage affordability, closing costs and a post-purchase emergency reserve.',
   savings:'Match each goal to its time horizon, liquidity need and risk comfort; organize TFSA/RRSP/FHSA/RESP or other accounts as applicable, then review suitable investment choices with an appropriately licensed professional.',
   organization:'Create one current financial inventory of income, expenses, assets, debts, insurance, registered accounts, beneficiaries and key documents so decisions are based on verified facts.'
