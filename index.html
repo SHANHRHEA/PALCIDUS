@@ -698,12 +698,10 @@ async function sendSummary(options={}){
  }catch(e){$('summaryStatus').textContent='Automatic email could not be delivered. Your snapshot remains available here. Delivery error: '+(e?.message||String(e));return false}
 }
 async function shareReferral(){
+ if(window.PALCYAIReferral?.openReferralDialog){window.PALCYAIReferral.openReferralDialog();return}
  const url='https://advisor-financial-insurance.pages.dev/';
- const text='A private PALCYAI Financial Discovery can help organize financial priorities before a human-advisor discussion. Complete your own discovery here. My personal answers are not shared.';
- try{
-  if(navigator.share){await navigator.share({title:'PALCYAI Financial Discovery',text,url});$('summaryStatus').textContent='The Financial Discovery invitation was opened for sharing.'}
-  else{await navigator.clipboard.writeText(`${text}\n${url}`);$('summaryStatus').textContent='A privacy-safe Financial Discovery invitation link was copied. Your personal snapshot was not included.'}
- }catch(e){if(e?.name!=='AbortError')$('summaryStatus').textContent='Share was not completed. You can copy this link: '+url}
+ try{await navigator.clipboard.writeText(url);$('summaryStatus').textContent='Referral link copied: '+url}
+ catch{$('summaryStatus').textContent='Share this referral link: '+url}
  window.PALCIDUS_I18N?.refreshUI?.();
 }
 
@@ -855,6 +853,7 @@ document.addEventListener('DOMContentLoaded',init);
 
 
 </script>
+<script src="/referral-sharing.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 
 <!-- PALCIDUSAI_PRIVACY_DETERRENT_V1: client-side misuse deterrent; forms remain usable. -->
