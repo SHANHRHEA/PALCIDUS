@@ -66,6 +66,20 @@ test('creates a reviewed BCC email draft only for contacts still selected', () =
   assert.match(decodeURIComponent(url.searchParams.get('body')), /https:\/\/advisor-financial-insurance\.pages\.dev\//);
 });
 
+test('opens a fully described draft in Gmail compose with selected recipients, subject, and message', () => {
+  const url = new URL(share.makeGmailComposeUrl([
+    { emails: ['jordan@example.test'], selected: true },
+    { emails: ['sam@example.test'], selected: false },
+  ]));
+  assert.equal(url.origin, 'https://mail.google.com');
+  assert.equal(url.searchParams.get('view'), 'cm');
+  assert.equal(url.searchParams.get('bcc'), 'jordan@example.test');
+  assert.equal(url.searchParams.get('su'), 'A financial discovery resource for you');
+  assert.match(url.searchParams.get('body'), /A private PALCYAI Financial Discovery/);
+  assert.match(url.searchParams.get('body'), /My personal answers are not shared/);
+  assert.match(url.searchParams.get('body'), /https:\/\/advisor-financial-insurance\.pages\.dev\//);
+});
+
 test('creates a reviewed SMS draft for one explicitly selected phone number', () => {
   const href = share.makeSmsDraft('+19055550111');
   assert.match(href, /^sms:/);
@@ -91,6 +105,8 @@ test('referral modal keeps email and text creation as in-page buttons and contac
   assert.match(sharingSource, /id="palcyai-sms-draft" type="button"/);
   assert.match(sharingSource, /id="palcyai-message-draft"/);
   assert.doesNotMatch(sharingSource, /pickerButton\.disabled\s*=\s*true/);
+  assert.match(sharingSource, /Open Gmail compose/);
+  assert.match(sharingSource, /This device does not have a text-app handler/);
 });
 
 function expectShareBody() {

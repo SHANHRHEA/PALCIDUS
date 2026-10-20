@@ -29,6 +29,11 @@
     if (recipients.length) params.set('bcc', recipients.join(','));
     return `mailto:?${params.toString()}`;
   }
+  function makeGmailComposeUrl(contacts = [], payload = makeSharePayload()) {
+    const draft = makeEmailDraftContent(contacts, payload);
+    const params = new URLSearchParams({ view: 'cm', fs: '1', to: '', bcc: draft.bcc, su: draft.subject, body: draft.body });
+    return `https://mail.google.com/mail/?${params.toString()}`;
+  }
   function makeSmsDraft(phone, payload = makeSharePayload()) {
     const number = String(phone || '').trim();
     const params = new URLSearchParams({ body: `${payload.text}\n\n${payload.url}` });
@@ -113,9 +118,29 @@
       const textarea = doc.createElement('textarea'); textarea.rows = 6; textarea.value = content.body; textarea.style.cssText = 'display:block;width:100%;box-sizing:border-box;padding:10px;margin-top:4px'; bodyLabel.append(textarea); panel.append(heading, bodyLabel);
       const actions = doc.createElement('div'); actions.style.cssText = 'display:flex;gap:8px;flex-wrap:wrap;margin-top:10px';
       const copy = doc.createElement('button'); copy.type = 'button'; copy.textContent = emailMode ? 'Copy email draft' : 'Copy text draft'; copy.addEventListener('click', () => copyDraft([...(emailMode ? [`BCC: ${content.bcc}`, `Subject: ${content.subject}`] : phone ? [`To: ${phone}`] : []), '', textarea.value].join('\n'), textarea));
-      const open = doc.createElement('a'); open.textContent = emailMode ? 'Open email app' : 'Open text app'; open.href = emailMode ? makeEmailDraft(emailContacts) : makeSmsDraft(phone); open.style.cssText = 'padding:6px 10px;border:1px solid #cbd5e1;border-radius:6px';
+      let open;
+      if (emailMode) {
+        open = doc.createElement('a'); open.textContent = 'Open Gmail compose'; open.href = makeGmailComposeUrl(emailContacts); open.target = '_blank'; open.rel = 'noopener noreferrer';
+        const nativeMail = doc.createElement('a'); nativeMail.textContent = 'Try default email app'; nativeMail.href = makeEmailDraft(emailContacts); nativeMail.style.cssText = 'padding:6px 10px;border:1px solid #cbd5e1;border-radius:6px';
+        open.style.cssText = 'padding:6px 10px;border:1px solid #cbd5e1;border-radius:6px';
+        actions.append(copy, open, nativeMail);
+      } else {
+        open = doc.createElement('button'); open.type = 'button'; open.textContent = 'Share text with an app';
+        open.addEventListener('click', async () => {
+          if (typeof nav?.share === 'function') {
+            try { await nav.share({ title: TITLE, text: textarea.value }); status.textContent = 'The share sheet opened. Choose your messaging app and recipient there.'; }
+            catch (error) { status.textContent = error?.name === 'AbortError' ? 'Sharing was cancelled. Your text draft is still here.' : 'The share sheet could not open. Copy the text draft below into your messaging app.'; }
+          } else {
+            await copyDraft(textarea.value, textarea);
+            if (status.textContent.startsWith('Draft copied')) status.textContent = 'This device does not have a text-app handler. The message was copied; paste it into your messaging app.';
+            else status.textContent = 'This device does not have a text-app handler. Copy the message from the box and paste it into your messaging app.';
+          }
+        });
+        open.style.cssText = 'padding:6px 10px;border:1px solid #cbd5e1;border-radius:6px';
+        actions.append(copy, open);
+      }
       const closeDraft = doc.createElement('button'); closeDraft.type = 'button'; closeDraft.textContent = 'Close draft'; closeDraft.addEventListener('click', () => draftArea.replaceChildren());
-      actions.append(copy, open, closeDraft); panel.append(actions); draftArea.append(panel);
+      actions.append(closeDraft); panel.append(actions); draftArea.append(panel);
       status.textContent = emailMode ? (content.bcc ? 'Email draft includes only the selected contacts with email addresses.' : 'Email draft ready. Add your recipient, then review and copy or open it in your email app.') : (phone ? 'Text draft ready for the selected phone number.' : 'Text draft ready. Choose a recipient in your messaging app.');
       textarea.focus();
     }
@@ -147,10 +172,8 @@
     const pickerButton = byId('palcyai-choose-contacts');
     pickerButton.addEventListener('click', async () => {
       if (!isContactPickerAvailable(nav, global)) {
-        if (typeof nav?.share === 'function') {
-          try { await nav.share(makeSharePayload()); status.textContent = 'This browser cannot list contacts for the page. The device share sheet opened; choose a recipient or app there.'; }
-          catch (error) { status.textContent = error?.name === 'AbortError' ? 'Sharing was cancelled. You can still create and copy an email or text draft below.' : 'Contact listing is unsupported here. Create a draft below or use Share to apps and contacts.'; }
-        } else status.textContent = 'This browser cannot list contacts or open a device share sheet. Use the email/text draft buttons and copy the message into an app.';
+        renderManualContactEntry();
+        status.textContent = 'This browser does not provide a device contact picker. Add only the recipients you want below; “Share to apps and contacts” opens the device share sheet.';
         return;
       }
       let selection;
@@ -173,11 +196,34 @@
       }
     });
 
+    function renderManualContactEntry() {
+      renderContacts();
+    }
+
     function selected() { return contacts.filter(contact => contact.selected); }
     function renderContacts() {
       contactsArea.replaceChildren();
+      if (!isContactPickerAvailable(nav, global)) {
+        const panel = doc.createElement('section');
+        panel.style.cssText = 'margin:12px 0;padding:12px;border:1px solid #cbd5e1;border-radius:10px;background:#f8fafc';
+        const title = doc.createElement('h3'); title.textContent = 'Add recipients';
+        const explanation = doc.createElement('p'); explanation.textContent = 'This browser cannot read your address book. Enter or paste only the contacts you choose; these stay in this page.';
+        const form = doc.createElement('form'); form.style.cssText = 'display:grid;gap:8px';
+        const name = doc.createElement('input'); name.type = 'text'; name.placeholder = 'Name (optional)'; name.setAttribute('aria-label', 'Recipient name');
+        const email = doc.createElement('input'); email.type = 'email'; email.placeholder = 'Email address (optional)'; email.setAttribute('aria-label', 'Recipient email');
+        const phoneInput = doc.createElement('input'); phoneInput.type = 'tel'; phoneInput.placeholder = 'Phone number (optional)'; phoneInput.setAttribute('aria-label', 'Recipient phone number');
+        const add = doc.createElement('button'); add.type = 'submit'; add.textContent = 'Add selected recipient';
+        form.append(name, email, phoneInput, add);
+        form.addEventListener('submit', event => {
+          event.preventDefault();
+          const entry = normalizeContacts([{ name: name.value, email: email.value, tel: phoneInput.value }])[0];
+          if (!entry) { status.textContent = 'Enter an email address or phone number to add this recipient.'; return; }
+          contacts.push(entry); renderContacts();
+        });
+        panel.append(title, explanation, form); contactsArea.append(panel);
+      }
       if (!contacts.length) {
-        status.textContent = 'No contacts with an email address or phone number were selected.';
+        if (isContactPickerAvailable(nav, global)) status.textContent = 'No contacts with an email address or phone number were selected.';
         return;
       }
       status.textContent = `${contacts.length} contact${contacts.length === 1 ? '' : 's'} selected on your device. Uncheck anyone you do not want to include.`;
@@ -224,7 +270,7 @@
     else { dialog.setAttribute('open', ''); dialog.style.position = 'fixed'; dialog.style.inset = '10% 5% auto'; }
   }
 
-  global.PALCYAIReferral = { makeSharePayload, normalizeContacts, areAllSelected, makeEmailDraft, makeSmsDraft, makeEmailDraftContent, makeTextDraftContent, isContactPickerAvailable, beginContactSelection, openReferralDialog };
+  global.PALCYAIReferral = { makeSharePayload, normalizeContacts, areAllSelected, makeEmailDraft, makeGmailComposeUrl, makeSmsDraft, makeEmailDraftContent, makeTextDraftContent, isContactPickerAvailable, beginContactSelection, openReferralDialog };
 })(globalThis);
 
 
