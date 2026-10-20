@@ -72,6 +72,31 @@ test('creates a reviewed SMS draft for one explicitly selected phone number', ()
   assert.match(decodeURIComponent(href), /https:\/\/advisor-financial-insurance\.pages\.dev\//);
 });
 
+test('creates copyable in-page email and text draft content', () => {
+  const email = share.makeEmailDraftContent([
+    { emails: ['jordan@example.test'], selected: true },
+    { emails: ['sam@example.test'], selected: false },
+  ]);
+  assert.deepEqual(JSON.parse(JSON.stringify(email)), {
+    to: '',
+    bcc: 'jordan@example.test',
+    subject: 'A financial discovery resource for you',
+    body: expectShareBody(),
+  });
+  assert.match(share.makeTextDraftContent(), /https:\/\/advisor-financial-insurance\.pages\.dev\//);
+});
+
+test('referral modal keeps email and text creation as in-page buttons and contact fallback enabled', () => {
+  assert.match(sharingSource, /id="palcyai-email-draft" type="button"/);
+  assert.match(sharingSource, /id="palcyai-sms-draft" type="button"/);
+  assert.match(sharingSource, /id="palcyai-message-draft"/);
+  assert.doesNotMatch(sharingSource, /pickerButton\.disabled\s*=\s*true/);
+});
+
+function expectShareBody() {
+  return `${share.makeSharePayload().text}\n\n${share.makeSharePayload().url}`;
+}
+
 
 
 
