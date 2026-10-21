@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow,noarchive"><meta name="referrer" content="strict-origin-when-cross-origin">
+<title>PALCYAI Daily Operations Archive</title>
+<style>
+:root{color-scheme:dark;--bg:#07101e;--panel:#101c30;--line:#2b3b57;--text:#edf4ff;--muted:#9fb0c8;--accent:#8588ff;--good:#6de0b1;--warn:#ffd27c;--bad:#ff8396}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 10% 0%,#1b2851,transparent 35%),var(--bg);color:var(--text);font:14px/1.5 system-ui,-apple-system,Segoe UI,Arial,sans-serif}.shell{max-width:1080px;margin:auto;padding:24px}.card{background:#101c30eF;border:1px solid var(--line);border-radius:16px;padding:18px;margin:14px 0}.top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}h1{font-size:25px;margin:0}h2{font-size:16px;margin:0 0 12px}.muted{color:var(--muted)}.small{font-size:12px}button,input,textarea,select{font:inherit}button{border:1px solid #3b4d70;border-radius:10px;padding:10px 13px;background:#172843;color:var(--text);cursor:pointer}button.primary{background:linear-gradient(120deg,#6b6ff4,#258aa3);border:0}button:disabled{opacity:.5;cursor:wait}input,textarea,select{width:100%;padding:11px;border:1px solid #3b4d70;border-radius:10px;background:#081222;color:var(--text)}textarea{min-height:115px;resize:vertical}.field{display:grid;gap:6px;margin:12px 0}.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.status{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:5px 9px;font-size:11px;color:var(--muted)}.list{display:grid;gap:10px}.entry{border:1px solid var(--line);border-radius:12px;padding:13px;background:#091526}.entryhead{display:flex;justify-content:space-between;gap:12px;align-items:start;flex-wrap:wrap}.entry p{white-space:pre-wrap;overflow-wrap:anywhere;margin:8px 0}.message{min-height:20px;margin:10px 0}.hide{display:none!important}@media(max-width:600px){.shell{padding:12px}}
+</style>
+</head>
+<body><main class="shell">
+<header class="top"><div><h1>PALCYAI <span style="color:#63d9ec">Daily Operations Archive</span></h1><div class="muted small">Owner-only · dated records · append-only history</div></div><span id="sessionState" class="status">Not signed in</span></header>
+<section id="login" class="card"><h2>Secure owner sign-in</h2><p class="muted">A Supabase magic link will be sent only to the configured owner email. No password or API secret is requested here.</p><div class="field"><label for="email">Owner email</label><input id="email" type="email" autocomplete="email" value="patrickpalcidus@gmail.com"></div><div class="row"><button id="loginBtn" class="primary">Send sign-in link</button><a href="/palcyai-live-control-center.html">Open Control Center</a></div><div id="loginMessage" class="message muted small" aria-live="polite"></div></section>
+<div id="workspace" class="hide">
+<section class="card"><div class="top"><h2>Save a daily report</h2><button id="signout">Sign out</button></div><p class="muted small">Use a brief, evidence-based summary. Do not include credentials, client contact details, raw logs or other personal data. Every save creates a new record; previous records are not edited.</p>
+<div class="field"><label for="date">Report date (Toronto)</label><input id="date" type="date" required></div>
+<div class="field"><label for="status">Overall status</label><select id="status"><option value="partially_operational">Partially operational</option><option value="operational">Operational</option><option value="blocked">Blocked</option><option value="degraded">Degraded</option><option value="unknown">Unknown / not verified</option></select></div>
+<div class="field"><label for="summary">Executive summary</label><textarea id="summary" maxlength="6000" required placeholder="What is verified, what is blocked, what changed, and the next actions."></textarea></div>
+<div class="field"><label for="verified">Verified components (one per line)</label><textarea id="verified" placeholder="Only components supported by current evidence"></textarea></div>
+<div class="field"><label for="blockers">Blockers and risks (one per line)</label><textarea id="blockers" placeholder="Include unresolved security and deployment issues"></textarea></div>
+<div class="field"><label for="changes">Changes made (one per line)</label><textarea id="changes" placeholder="Only confirmed changes"></textarea></div>
+<div class="field"><label for="actions">Next actions (one per line)</label><textarea id="actions" placeholder="Prioritized next steps"></textarea></div>
+<div class="row"><button id="save" class="primary">Append report to archive</button><button id="refresh">Refresh history</button></div><div id="message" class="message muted small" aria-live="polite"></div></section>
+<section class="card"><div class="top"><h2>Historical reports</h2><span id="count" class="status">0 records</span></div><div id="records" class="list"><p class="muted">Sign in to load archived reports.</p></div></section>
+</div></main>
+<script type="module">
+import {createClient} from 'https://esm.sh/@supabase/supabase-js@2';
+const URL='https://yzeomkrvncewnrbvhuui.supabase.co';
+const KEY='sb_publishable_ZnvYLFgr4w0TNrgplM6dLQ_sO9ThtD0';
+const OWNER='patrickpalcidus@gmail.com';
+const API=URL+'/functions/v1/palcyai-ops-archive';
+const sb=createClient(URL,KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+const $=id=>document.getElementById(id);
+const lines=id=>$(id).value.split(/\r?\n/).map(x=>x.trim()).filter(Boolean).slice(0,12);
+const safe=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const session=async()=>{const {data,error}=await sb.auth.getSession();if(error)throw error;return data.session};
+async function api(method='GET',body=null){const s=await session();if(!s)throw Error('Owner sign-in required');const r=await fetch(API+(method==='GET'?'?limit=60':''),{method,headers:{'Content-Type':'application/json','apikey':KEY,'Authorization':'Bearer '+s.access_token},...(body?{body:JSON.stringify(body)}:{})});const d=await r.json().catch(()=>({}));if(!r.ok)throw Error(d.error||('Archive HTTP '+r.status));return d}
+function showRecords(rows){$('records').replaceChildren();$('count').textContent=rows.length+' records';if(!rows.length){$('records').innerHTML='<p class="muted">No reports archived yet.</p>';return}for(const r of rows){const el=document.createElement('article');el.className='entry';const report=r.report||{};el.innerHTML='<div class="entryhead"><strong>'+safe(r.report_date)+' · '+safe(r.overall_status)+'</strong><span class="status">'+safe(new Date(r.generated_at).toLocaleString())+'</span></div><p>'+safe(r.summary)+'</p>'+(report.blockers?.length?'<p><strong>Blockers:</strong> '+safe(report.blockers.join(' · '))+'</p>':'')+(report.next_actions?.length?'<p><strong>Next:</strong> '+safe(report.next_actions.join(' · '))+'</p>':'');$('records').appendChild(el)}}
+async function refresh(){try{const d=await api();showRecords(d.records||[]);$('message').textContent='History refreshed at '+new Date(d.generated_at).toLocaleString()}catch(e){$('message').textContent=e.message}}
+function setSession(s){const owner=!!s&&String(s.user?.email||'').toLowerCase()===OWNER;$('sessionState').textContent=owner?'Signed in as owner':'Not signed in';$('login').classList.toggle('hide',owner);$('workspace').classList.toggle('hide',!owner);if(s&&!owner)void sb.auth.signOut()}
+$('date').value=new Date().toLocaleDateString('en-CA');
+$('loginBtn').addEventListener('click',async()=>{const email=$('email').value.trim().toLowerCase();if(email!==OWNER){$('loginMessage').textContent='Owner-only access. Use the configured owner email.';return}const {error}=await sb.auth.signInWithOtp({email,options:{emailRedirectTo:location.origin+location.pathname}});$('loginMessage').textContent=error?error.message:'Sign-in link requested. Open it in the owner mailbox.'});
+$('signout').addEventListener('click',async()=>{await sb.auth.signOut();});
+$('refresh').addEventListener('click',refresh);
+$('save').addEventListener('click',async()=>{const summary=$('summary').value.trim();if(!summary){$('message').textContent='Enter the executive summary first.';return}const report={report_date:$('date').value,reviewed_at:new Date().toISOString(),overall_status:$('status').value,summary,verified_components:lines('verified'),blockers:lines('blockers'),changes:lines('changes'),next_actions:lines('actions'),evidence_links:['https://advisor-financial-insurance.pages.dev/','https://supabase.com/dashboard/project/yzeomkrvncewnrbvhuui']};$('save').disabled=true;try{const d=await api('POST',{action:'append',report});$('message').textContent='Saved append-only record '+d.record.archive_id+' at '+new Date(d.record.generated_at).toLocaleString();$('summary').value='';await refresh()}catch(e){$('message').textContent='Save failed: '+e.message}finally{$('save').disabled=false}});
+sb.auth.onAuthStateChange((_e,s)=>{setSession(s);if(s&&String(s.user?.email||'').toLowerCase()===OWNER)void refresh()});
+const s=await session();setSession(s);if(s&&String(s.user?.email||'').toLowerCase()===OWNER)await refresh();
+</script></body></html>
