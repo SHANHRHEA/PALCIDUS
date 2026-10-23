@@ -15,7 +15,7 @@
 <div class="shell">
 <header class="top">
  <div class="brand"><div class="logo">P</div><div><h1>PALCYAI <span style="color:var(--cyan)">LIVE CONTROL</span></h1><p>Owner command · verified provider events · evidence-backed status</p></div></div>
- <div class="topright"><span id="sessionPill" class="pill"><span class="dot"></span> Not signed in</span><button id="refreshBtn" class="btn" disabled>↻ Refresh live status</button><button id="signOutBtn" class="btn hide">Sign out</button></div>
+ <div class="topright"><span id="sessionPill" class="pill"><span class="dot"></span> Not signed in</span><button id="dailyOpsBtn" class="btn primary" disabled>▶ Run daily operations</button><button id="refreshBtn" class="btn" disabled>↻ Refresh live status</button><button id="signOutBtn" class="btn hide">Sign out</button></div>
 </header>
 <div id="loginBox" class="card">
  <h2 class="sectiontitle">Secure owner sign-in <span class="status info">Owner-only</span></h2>
@@ -80,6 +80,7 @@ const SUPABASE_PUBLISHABLE_KEY='sb_publishable_ZnvYLFgr4w0TNrgplM6dLQ_sO9ThtD0';
 const OWNER_EMAIL='patrickpalcidus@gmail.com';
 const OWNER_COMMAND_URL=SUPABASE_URL+'/functions/v1/palcy-owner-command';
 const HEALTH_URL=SUPABASE_URL+'/functions/v1/advisor-health';
+const ARCHIVE_URL=SUPABASE_URL+'/functions/v1/palcyai-ops-archive';
 const sb=createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
 const $=id=>document.getElementById(id);
 let runCounter=0;
@@ -89,7 +90,7 @@ const fmtElapsed=v=>(v/1000).toFixed(2)+' s';
 function setSession(session){
  const owner=!!session&&String(session.user?.email||'').toLowerCase()===OWNER_EMAIL;
  $('sessionPill').innerHTML='<span class="dot '+(owner?'good':'')+'"></span>'+(owner?'Signed in as owner':'Not signed in');
- $('loginBox').classList.toggle('hide',owner);$('workspace').classList.toggle('hide',!owner);$('refreshBtn').disabled=!owner;$('signOutBtn').classList.toggle('hide',!owner);
+ $('loginBox').classList.toggle('hide',owner);$('workspace').classList.toggle('hide',!owner);$('refreshBtn').disabled=!owner;$('dailyOpsBtn').disabled=!owner;$('signOutBtn').classList.toggle('hide',!owner);
  if(session&&!owner){$('loginMessage').textContent='Owner-only page. Signing out the non-owner session.';sb.auth.signOut()}
 }
 async function currentSession(){const {data,error}=await sb.auth.getSession();if(error)throw error;return data.session}
@@ -139,6 +140,53 @@ function renderStatus(response){
  fillList('approvalList',d.recent_approvals||[],e=>eventCard('Approval '+(e.approval_id||''),e.status||'unknown',fmtDate(e.created_at),'Read-only approval snapshot'),'No approval records returned.');
 }
 async function refreshStatus(){return await runTask('Refresh live intake, email, SMS, inbound, approvals and test state',async()=>{const result=await callOwner('system status');if(result.action==='system_status')renderStatus(result);return result})}
+let dailyOpsRunning=false;
+async function runDailyOperations(){
+ if(dailyOpsRunning)return;
+ dailyOpsRunning=true;$('dailyOpsBtn').disabled=true;$('dailyOpsBtn').textContent='Running daily operations…';
+ try{
+  await runTask('Run daily operations, verify live checks, and archive report',async()=>{
+   const checks=await Promise.all([
+    callHealth().catch(e=>({status:'error',error:e?.message||String(e)})),
+    callOwner('system status').catch(e=>({ok:false,error:e?.message||String(e)})),
+    callOwner('domain status').catch(e=>({ok:false,error:e?.message||String(e)}))
+   ]);
+   const health=checks[0],status=checks[1],domain=checks[2];
+   if(status.action==='system_status')renderStatus(status);
+   if(domain.action==='domain_status'){
+    const d=domain.detail||{},cap=d.capabilities||{};
+    $('mEmail').textContent=String(d.status||'UNKNOWN').toUpperCase();
+    $('mEmailNote').textContent='Sending: '+String(cap.sending||'unknown')+' · Receiving: '+String(cap.receiving||'unknown');
+   }
+   const verified=[],blockers=[];
+   if(health.status==='ok'&&health.auth==='verified'&&health.database==='reachable')verified.push('Owner authentication and Supabase database health check passed.');
+   else blockers.push('Backend health check did not pass: '+String(health.error||health.database||health.status||'unknown result')+'.');
+   if(domain.ok===true)verified.push('Resend domain status endpoint returned successfully; domain status: '+String(domain.detail?.status||'unknown')+'.');
+   else blockers.push('Resend domain check failed: '+String(domain.error||domain.detail?.error||'unknown error')+'.');
+   if(status.action==='system_status'&&status.ok===true)verified.push('Live system status endpoint returned; '+String(status.data?.latest_tests?.length||0)+' recent test records were read.');
+   else blockers.push('Live system status check failed: '+String(status.error||'no valid status response')+'.');
+   const warnings=status.data?.query_warnings||[];
+   if(warnings.length)blockers.push('Some live data queries failed: '+warnings.join(', ')+'.');
+   if(!status.data?.latest_tests?.length)blockers.push('No recent test-ledger records were returned; integrations are not considered fully verified.');
+   blockers.push('CRM sync, booking, voice calls, WhatsApp, social publishing and Stripe remain unverified unless separate provider tests prove them.');
+   const allCoreChecks=health.status==='ok'&&domain.ok===true&&status.ok===true&&!warnings.length;
+   const overall=allCoreChecks?'partially_operational':'degraded';
+   const torontoDate=new Intl.DateTimeFormat('en-CA',{timeZone:'America/Toronto',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
+   const summary='PALCYAI one-click daily review — '+torontoDate+' (America/Toronto). Overall: '+overall+'. Backend: '+String(health.status||'unknown')+'; database: '+String(health.database||'unknown')+'; Resend domain check: '+(domain.ok?'returned successfully':'failed')+'; live system status: '+(status.action==='system_status'&&status.ok!==false?'returned successfully':'failed')+'. '+(warnings.length?'Data-query warnings: '+warnings.join(', ')+'. ':'')+'This report records only checks returned by live endpoints. Unverified integrations are not marked operational.';
+   const session=await currentSession();
+   if(!session)throw new Error('Owner session expired before archive save. Sign in again once; no report was saved.');
+   const payload={action:'append',report:{report_date:torontoDate,reviewed_at:new Date().toISOString(),overall_status:overall,summary,verified_components:verified,blockers,changes:['Added one-click daily operations runner; this run performs read-only checks and appends a dated report.'],next_actions:['Resolve any failed live checks shown above.','Complete synthetic end-to-end tests for CRM, Resend idempotency, booking, voice and other integrations before enabling client-facing automation.'],evidence_links:['https://advisor-financial-insurance.pages.dev/palcyai-live-control-center']}};
+   const response=await fetch(ARCHIVE_URL,{method:'POST',headers:{'Content-Type':'application/json','apikey':SUPABASE_PUBLISHABLE_KEY,'Authorization':'Bearer '+session.access_token},body:JSON.stringify(payload)});
+   const result=await response.json().catch(()=>({}));
+   if(!response.ok||result.ok!==true)throw new Error('Checks ran, but archive save failed: '+String(result.error||('HTTP '+response.status)));
+   return{ok:true,action:'daily_operations_archived',overall_status:overall,verified_components:verified.length,blockers:blockers.length,archive_id:result.record?.archive_id||null,report_date:torontoDate,checks:{backend:health.status||'unknown',system_status:status.action||'failed',resend_domain:domain.ok?'returned':'failed'},message:'Daily checks finished and the dated report was appended to the archive.'};
+  });
+ }finally{
+  dailyOpsRunning=false;$('dailyOpsBtn').textContent='▶ Run daily operations';
+  const session=await currentSession().catch(()=>null);
+  $('dailyOpsBtn').disabled=!(session&&String(session.user?.email||'').toLowerCase()===OWNER_EMAIL);
+ }
+}
 async function checkDomain(){return await runTask('Read current Resend domain and DNS verification',async()=>{
  const r=await callOwner('domain status');const d=r.detail||{};const cap=d.capabilities||{};const records=d.records||[];
  if(r.action==='domain_status'){$('mEmail').textContent=String(d.status||'UNKNOWN').toUpperCase();$('mEmailNote').textContent='Sending: '+String(cap.sending||'unknown')+' · Receiving: '+String(cap.receiving||'unknown');
@@ -170,7 +218,7 @@ $('loginBtn').addEventListener('click',async()=>{
  finally{clearInterval(timer);$('loginTimer').textContent='Finished in '+fmtElapsed(performance.now()-start);$('loginBtn').disabled=false}
 });
 $('signOutBtn').addEventListener('click',()=>runTask('Sign out owner session',async()=>{const {error}=await sb.auth.signOut();if(error)throw error;return{ok:true,action:'signed_out'}}));
-$('refreshBtn').addEventListener('click',refreshStatus);$('statusBtn').addEventListener('click',refreshStatus);
+$('dailyOpsBtn').addEventListener('click',runDailyOperations);$('refreshBtn').addEventListener('click',refreshStatus);$('statusBtn').addEventListener('click',refreshStatus);
 $('healthBtn').addEventListener('click',()=>runTask('Authenticated Supabase auth + database health check',async()=>{const r=await callHealth();$('mHealth').textContent=String(r.status||'unknown').toUpperCase();$('mHealthNote').textContent='Authentication: '+String(r.auth||'unknown')+' · Database: '+String(r.database||'unknown');return r}));
 $('domainBtn').addEventListener('click',checkDomain);$('smsBtn').addEventListener('click',async()=>{await refreshStatus();document.querySelector('[data-pane="smsPane"]').click()});$('inboundBtn').addEventListener('click',async()=>{await refreshStatus();document.querySelector('[data-pane="inboundPane"]').click()});
 $('commandForm').addEventListener('submit',submitCommand);
