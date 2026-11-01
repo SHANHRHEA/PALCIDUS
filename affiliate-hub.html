@@ -46,4 +46,4 @@ $("researchForm").addEventListener("submit",async e=>{e.preventDefault();message
 $("refresh").addEventListener("click",refresh);$("signout").addEventListener("click",async()=>{await client.auth.signOut();showApp(false);message($("loginStatus"),"Signed out.");});
 client.auth.onAuthStateChange((_event,session)=>{const ok=!!session?.access_token;showApp(ok);if(ok)refresh();});
 (async()=>{const {data:{session}}=await client.auth.getSession();showApp(!!session?.access_token);if(session?.access_token)refresh();})();
-</script></body></html>
+</script><script defer src="/palcy-accessibility.js"></script></body></html>
