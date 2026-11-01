@@ -99,5 +99,5 @@ $('loginBtn').onclick=async()=>{const email=$('loginEmail').value.trim();if(emai
 $('commandForm').onsubmit=e=>{e.preventDefault();const c=$('command').value.trim();if(c){$('command').value='';sendCommand(c)}};
 sb.auth.onAuthStateChange((_event,session)=>setSignedIn(!!session,session?.user?.email||''));const {data:{session}}=await sb.auth.getSession();setSignedIn(!!session,session?.user?.email||'');
 </script>
-</body>
+<script defer src="/palcy-accessibility.js"></script></body>
 </html>
