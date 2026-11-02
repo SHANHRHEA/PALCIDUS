@@ -337,5 +337,5 @@ document.addEventListener('click',e=>{const c=e.target.closest('[data-create]');
 document.getElementById('closeModal').onclick=closeCreate;document.getElementById('cancelCreate').onclick=closeCreate;document.getElementById('saveCreate').onclick=()=>{const n=document.getElementById('createName').value.trim();if(!n)return toast('Add a name first.');const map={Brain:'brains',Agent:'agents',Funnel:'funnels',Knowledge:'knowledge',Campaign:'campaign',Automation:'automation',Skill:'skillFactory'};const k=map[createType];if(Array.isArray(state[k]))state[k].push(n);closeCreate();renderAll();toast('Created '+createType+': '+n+' in this UI workspace. Persist to the real source of truth through the secure backend.');};
 </script>
 <script src="/palcyai-live.js"></script>
-<script defer src="/palcy-accessibility.js"></script></body>
+<script defer src="/palcy-accessibility.js?v=toolbar-drag-20261102"></script></body>
 </html>
