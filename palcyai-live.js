@@ -22,6 +22,7 @@
     const response=await fetch(URL+'/functions/v1/'+route,{method:'POST',headers:{'Content-Type':'application/json',apikey:KEY,Authorization:'Bearer '+data.session.access_token},body:JSON.stringify(payload)});
     const result=await response.json();if(!response.ok)throw Error(result.error||'Request failed');return result;
   }
+  window.addEventListener('palcy-inline-ai-request',async event=>{const detail=event.detail||{};try{if(!owner)throw new Error('Sign in with the existing PALCYAI owner login first.');const prompt=String(detail.prompt||'').trim();if(!prompt)throw new Error('Enter a task first.');const result=await api({action:'run',operation:'ai_generate',request_id:crypto.randomUUID(),title:prompt,module:'command',role:String(detail.role||'PALCYAI Brain')});if(!result.ok||!result.job?.result?.answer)throw new Error(result.job?.error?.message||result.error||'No AI answer returned');window.dispatchEvent(new CustomEvent('palcy-inline-ai-result',{detail:{answer:result.job.result.answer}}));}catch(e){window.dispatchEvent(new CustomEvent('palcy-inline-ai-result',{detail:{error:e instanceof Error?e.message:'AI task failed'}}))}});
   function time(iso){return iso?new Date(iso).toLocaleString():'';}
   function duration(row){if(!row.started_at)return '';const end=row.completed_at?Date.parse(row.completed_at):Date.now();return Math.max(0,(end-Date.parse(row.started_at))/1000).toFixed(1)+'s';}
   function renderRows(rows,key){
