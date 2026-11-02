@@ -29,9 +29,9 @@ function uiCandidates(){
  while(walker.nextNode()){
   const n=walker.currentNode,el=n.parentElement;
   if(!el||el.closest(uiSkip)||!n.textContent?.trim())continue;
-  if(!el.closest('nav,aside,header,main,button,label,summary,.modal,.side,.app'))continue;
+  if(!el.closest('nav,aside,header,button,label,summary,h1,h2,h3,.side'))continue;
   const original=n.__palcyOriginal??n.textContent;
-  if(!original||original.trim().length>150||original.trim().length<2)continue;
+  if(!original||original.trim().length>100||original.trim().length<2)continue;
   if(/^(https?:|[0-9\s.,%$€£+\-/]+$)/.test(original.trim()))continue;
   if(!n.__palcyOriginal)n.__palcyOriginal=original;
   nodes.push(n);
