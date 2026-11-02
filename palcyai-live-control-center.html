@@ -229,5 +229,5 @@ document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>{doc
 sb.auth.onAuthStateChange((_event,session)=>{setSession(session);if(session&&String(session.user?.email||'').toLowerCase()===OWNER_EMAIL){refreshStatus();checkDomain()}});
 const {data:{session}}=await sb.auth.getSession();setSession(session);if(session&&String(session.user?.email||'').toLowerCase()===OWNER_EMAIL){await refreshStatus();await checkDomain()}
 </script>
-</body>
+<script defer src="/palcy-accessibility.js"></script></body>
 </html>
