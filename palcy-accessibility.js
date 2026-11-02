@@ -23,15 +23,15 @@
 'Copy complete request':{fr:'Copier la demande',es:'Copiar solicitud',pt:'Copiar solicitação',de:'Anfrage kopieren',hi:'पूरा अनुरोध कॉपी करें',ar:'نسخ الطلب',zh:'复制完整请求'}
 };let UI_TRANSLATING=false;function translateUI(code){if(UI_TRANSLATING)return;UI_TRANSLATING=true;try{document.querySelectorAll('nav a,aside a,button,h1,h2,h3,label,summary').forEach(el=>{if(el.closest('#palcy-locale-controls'))return;const raw=el.textContent.trim();if(!raw||el.children.length)return;const original=el.dataset.palcyOriginal||raw;const clean=original.replace(/^[^\p{L}\p{N}]+/u,'').trim();const term=UI_TERMS[clean];if(!term)return;el.dataset.palcyOriginal=original;const leading=original.slice(0,original.indexOf(clean));el.textContent=leading+(code==='en'?clean:(term[code]||clean))})}finally{UI_TRANSLATING=false}};let uiLocale='en',uiTimer=null,uiBusy=false,uiSeq=0;
 const translationCache=new Map();
-const uiSkip='script,style,noscript,pre,code,textarea,input,select,option,[contenteditable],#palcy-locale-controls,#palcyTaskPreview,#palcyTaskError,[aria-live],.user-message,.ai-response';
+const uiSkip='script,style,noscript,pre,code,textarea,input,select,option,[contenteditable],#palcy-locale-controls,#palcyTaskPreview,#palcyTaskError,[aria-live],.user-message,.ai-response,[data-user-content],[data-ai-output]';
 function uiCandidates(){
  const nodes=[];const walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);
  while(walker.nextNode()){
   const n=walker.currentNode,el=n.parentElement;
   if(!el||el.closest(uiSkip)||!n.textContent?.trim())continue;
-  if(!el.closest('nav,aside,header,button,label,summary,h1,h2,h3,.side'))continue;
+  if(!el.closest('nav,aside,header,main,button,label,summary,h1,h2,h3,.side,.modal,.app'))continue;
   const original=n.__palcyOriginal??n.textContent;
-  if(!original||original.trim().length>100||original.trim().length<2)continue;
+  if(!original||original.trim().length>180||original.trim().length<2)continue;
   if(/^(https?:|[0-9\s.,%$€£+\-/]+$)/.test(original.trim()))continue;
   if(!n.__palcyOriginal)n.__palcyOriginal=original;
   nodes.push(n);
